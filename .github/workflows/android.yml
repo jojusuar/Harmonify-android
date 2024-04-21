@@ -1,17 +1,8 @@
 name: Production Builds
 on:
-  workflow_dispatch:
-    inputs:
-      name:
-        description: "Release-Build"
-        default: "Generate release build"
-      testers:
-        type: choice
-        description: "Select testers"
-        options:
-          - android
-          - internalTesters
-          - everyone
+  push:
+    tags:
+      - '*'
 
 jobs:
   build:
