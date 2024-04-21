@@ -55,13 +55,16 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           path: ${{steps.sign_app.outputs.signedReleaseFile}}
-
+          
+      - name: Rename File
+        run: |
+          mv ${{steps.sign_app.outputs.signedReleaseFile}} app/build/outputs/apk/release/Harmonify.apk
       
       - name: Upload To Github Release
         uses: xresloader/upload-to-github-release@v1.5.0
         env:
            GITHUB_TOKEN: ${{ secrets.TOKEN }}
         with:
-           file: ${{steps.sign_app.outputs.signedReleaseFile}}
+           file: app/build/outputs/apk/release/Harmonify.apk
            tags: true
            draft: false
