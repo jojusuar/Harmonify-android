@@ -32,15 +32,19 @@ jobs:
         run: chmod +x gradlew
 
       - name: Build Release apk
-        env:
-          RELEASE_KEYSTORE_PASSWORD: ${{ secrets.KEYSTOREPASSWORD }}
-          RELEASE_KEYSTORE_ALIAS: ${{ secrets.ALIAS }}
-          RELEASE_KEY_PASSWORD: ${{ secrets.KEYPASSWORD }}
-        run: ./gradlew assembleRelease --stacktrace \
-          -Pandroid.injected.signing.store.file="$GITHUB_WORKSPACE/keystore.jks" \
-          -Pandroid.injected.signing.store.password="${{ secrets.KEYSTOREPASSWORD }}" \
-          -Pandroid.injected.signing.key.alias="${{ secrets.ALIAS }}" \
-          -Pandroid.injected.signing.key.password="${{ secrets.KEYPASSWORD }}"
+        run: ./gradlew assembleRelease --stacktrace
+
+      - name: Sign app APK
+        uses: r0adkll/sign-android-release@v1
+    
+        # ID used to access action output
+        id: sign_app
+        with:
+          releaseDirectory: app/build/outputs/apk/release
+          signingKeyBase64: ${{ secrets.SIGNINGKEYBASE64 }}
+          alias: ${{ secrets.ALIAS }}
+          keyStorePassword: ${{ secrets.KEYSTOREPASSWORD }}
+          keyPassword: ${{ secrets.KEYPASSWORD }}
 
       - name: Get release file apk path
         id: releaseApk
