@@ -1,76 +1,94 @@
-name: Release Build
+name: Production Builds
 on:
-  push:
-    tags:
-      - 'v*'
+  workflow_dispatch:
+    inputs:
+      name:
+        description: "Release-Build"
+        default: "Generate release build"
+      testers:
+        type: choice
+        description: "Select testers"
+        options:
+          - android
+          - internalTesters
+          - everyone
+
 jobs:
-  Build:
-    name: Build/Sign APK
+  build:
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v3
+      - name: Checking out branch
+        uses: actions/checkout@v3
 
-      - name: Get Tag
-        id: var
-        run: echo ::set-output name=tag::${GITHUB_REF#refs/*/}
-
-      - name: Access Api keys
-        env:
-          apiKey: ${{ secrets.API_KEY }}
-          path: app/src/main/res/values/secrets.xml
-        run: |
-          touch $path
-          echo \<resources\> >> $path
-          echo \<string name=\"google_maps_key\"\>$apiKey\</string\> >> $path
-          echo \</resources\> >> $path
-
-
-      - name: Setup JDK
+      - name: Setup Java
         uses: actions/setup-java@v3
         with:
-          distribution: 'zulu'
-          java-version: '17'
-          cache: 'gradle'
+          distribution: 'temurin'
+          java-version: 17
 
-      - name: Build APK
-        run: bash ./gradlew assembleRelease
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v2.0.10
 
-      - name: Sign App
-        if: ${{ steps.regex-match.outputs.match != '' }}
-        id: sign_app
-        uses: ilharp/sign-android-release@v1.0.4
-        with:
-          releaseDir: app/build/outputs
-          signingKey: ${{ secrets.ANDROID_SIGNING_KEY }}
-          keyAlias: ${{ secrets.ANDROID_KEY_ALIAS }}
-          keyStorePassword: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
-          keyPassword: ${{ secrets.ANDROID_KEY_PASSWORD }}
-
-      - name: Build Changelog
-        id: changelog
-        uses: ardalanamini/auto-changelog@v2
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Create release
-        uses: actions/create-release@v1
-        id: create_release
-        with:
-          draft: false
-          prerelease: false
-          release_name: Release ${{ github.ref }}
-          tag_name: ${{ github.ref }}
-          body: |
-            ${{ steps.changelog.outputs.changelog }}
+      # This will decode the keystore from base 64 text representation that we have stored in secrets
+      # and generates and keystore file and gets stored in /android-app path
+      - name: Decode Keystore
         env:
-          GITHUB_TOKEN: ${{ github.token }}
+          ENCODED_STRING: ${{ secrets.SIGNINGKEY64 }}
+          RELEASE_KEYSTORE_PASSWORD: ${{ secrets.KEYSTOREPASSWORD }}
+          RELEASE_KEYSTORE_ALIAS: ${{ secrets.ALIAS }}
+          RELEASE_KEY_PASSWORD: ${{ secrets.KEYPASSWORD }}
 
-      - name: Upload APK
-        uses: actions/upload-release-asset@v1
+        run: |
+          echo $ENCODED_STRING > keystore-b64.txt
+          base64 -d keystore-b64.txt > keystore.jks
+
+      - name: Build Release apk
         env:
-          GITHUB_TOKEN: ${{ github.token }}
+          RELEASE_KEYSTORE_PASSWORD: ${{ secrets.KEYSTOREPASSWORD }}
+          RELEASE_KEYSTORE_ALIAS: ${{ secrets.ALIAS }}
+          RELEASE_KEY_PASSWORD: ${{ secrets.KEYPASSWORD }}
+        run: ./gradlew assembleRelease --stacktrace
+
+      - name: Build Release bundle
+        env:
+          RELEASE_KEYSTORE_PASSWORD: ${{ secrets.KEYSTOREPASSWORD }}
+          RELEASE_KEYSTORE_ALIAS: ${{ secrets.ALIAS }}
+          RELEASE_KEY_PASSWORD: ${{ secrets.KEYPASSWORD }}
+        run: ./gradlew bundleRelease --stacktrace
+
+      - name: Get release file aab path
+        id: releaseAab
+        run: echo "aabfile=$(find app/build/outputs/bundle/release/*.aab)" >> $GITHUB_OUTPUT
+
+      - name: Get release file apk path
+        id: releaseApk
+        run: echo "apkfile=$(find app/build/outputs/apk/release/*.apk)" >> $GITHUB_OUTPUT
+
+      - name: Zip Files
+        uses: papeloto/action-zip@v1
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ${{steps.sign_apk.outputs.signedReleaseFile}}
-          asset_name: GitamTransit-${{ steps.var.outputs.tag }}.apk
-          asset_content_type: application/zip
+          files: ${{ steps.releaseAab.outputs.aabfile }} ${{ steps.releaseApk.outputs.apkfile }}
+          dest: ${{ steps.releaseApk.outputs.apkfile }}.zip
+
+#      - name: Sending release build to Slack
+#        uses: MeilCli/slack-upload-file@v3
+#        with:
+#          slack_token: ${{ secrets.SLACK_BOT_TOKEN }}
+#          file_path: ${{ steps.releaseApk.outputs.apkfile }}.zip
+#          channel_id: ${{ secrets.SLACK_CHANNEL_ID }}
+#          initial_comment: "Release build is now available."
+#
+#      - name: upload apk to Firebase App Distribution
+#        uses: wzieba/Firebase-Distribution-Github-Action@v1
+#        with:
+#          appId: ${{secrets.FIREBASE_APP_ID_RELEASE}}
+#          serviceCredentialsFileContent: ${{ secrets.SERVICE_CREDENTIALS_FILE_RELEASE }}
+#          groups: ${{ github.event.inputs.testers }}
+#          file: ${{ steps.releaseApk.outputs.apkfile }}
+
+      - name: Upload Release Build to Artifacts
+        uses: actions/upload-artifact@v3
+        with:
+           name: release-artifacts
+           path: ${{ steps.releaseApk.outputs.apkfile }}
