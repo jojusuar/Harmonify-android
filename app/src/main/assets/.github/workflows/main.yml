@@ -1,0 +1,22 @@
+name: Push File
+
+on: push
+
+jobs:
+  copy-file:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Pushes test file
+      uses: dmnemec/copy_file_to_another_repo_action@main
+      env:
+        API_TOKEN_GITHUB: ${{ secrets.TOKEN }}
+      with:
+        source_file: '.'
+        destination_repo: 'jojusuar/Harmonify-android'
+        destination_folder: 'app/src/main/assets'
+        user_email: 'jojusuar@espol.edu.ec'
+        user_name: 'jojusuar'
+        commit_message: 'automated commit'
