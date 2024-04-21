@@ -34,7 +34,7 @@ jobs:
 
         run: |
           echo $ENCODED_STRING > keystore-b64.txt
-          base64 -d keystore-b64.txt > keystore.jks
+          base64 -d keystore-b64.txt > GITHUB_WORKSPACE/keystore.jks
 
 
       - name: Grant execute permission for gradlew
@@ -46,7 +46,7 @@ jobs:
           RELEASE_KEYSTORE_ALIAS: ${{ secrets.ALIAS }}
           RELEASE_KEY_PASSWORD: ${{ secrets.KEYPASSWORD }}
         run: ./gradlew assembleRelease --stacktrace \
-          -Pandroid.injected.signing.store.file="keystore.jks" \
+          -Pandroid.injected.signing.store.file="${{ GITHUB_WORKSPACE/keystore.jks }}" \
           -Pandroid.injected.signing.store.password="${{ secrets.KEYSTOREPASSWORD }}" \
           -Pandroid.injected.signing.key.alias="${{ secrets.ALIAS }}" \
           -Pandroid.injected.signing.key.password="${{ secrets.KEYPASSWORD }}"
