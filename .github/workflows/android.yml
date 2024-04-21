@@ -26,7 +26,7 @@ jobs:
       # and generates and keystore file and gets stored in /android-app path
       - name: Decode Keystore
         env:
-          ENCODED_STRING: ${{ secrets.SIGNINGKEY64 }}
+          ENCODED_STRING: ${{ secrets.SIGNINGKEYBASE64 }}
           RELEASE_KEYSTORE_PASSWORD: ${{ secrets.KEYSTOREPASSWORD }}
           RELEASE_KEYSTORE_ALIAS: ${{ secrets.ALIAS }}
           RELEASE_KEY_PASSWORD: ${{ secrets.KEYPASSWORD }}
