@@ -64,5 +64,4 @@ jobs:
         with:
            file: ${{steps.sign_app.outputs.signedReleaseFile}}
            tags: true
-           draft: true
-     
+           draft: false
