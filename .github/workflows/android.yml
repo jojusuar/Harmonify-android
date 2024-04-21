@@ -51,17 +51,7 @@ jobs:
         env:
           BUILD_TOOLS_VERSION: "34.0.0"
 
-      - name: Get release file apk path
-        id: releaseApk
-        run: echo "apkfile=$(find app/build/outputs/apk/release/*.apk)" >> $GITHUB_OUTPUT
-
-      - name: Upload To Github Release
-        uses: xresloader/upload-to-github-release@v1.5.0
-        env:
-           GITHUB_TOKEN: ${{ secrets.TOKEN }}
+      - name: Signed app bundle
+        uses: actions/upload-artifact@v2
         with:
-           file: ${{ steps.releaseApk.outputs.apkfile }}
-           tags: true
-           draft: false
-            
-        
+          path: ${{steps.sign_app.outputs.signedReleaseFile}}
