@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src=classes/Note.js></script>
+    <script src=classes/Intervals.js></script>
+    <script src=classes/Scale.js></script>
+    <script src=classes/Chord.js></script>
+    <script src=classes/HarmonicCircle.js></script>
+    <script src=adt/DoubleLinkNode.js></script>
+    <script src=adt/CircularLinkedList.js></script>
+    <script src=adt/Graph.js></script>
+    <script src=adt/Vertex.js></script>
+    <script src=adt/Edge.js></script>
+    <title>Harmonify</title>
+    <link rel="fonts" href="css/nunito.css">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+
+<body style="background-color: rgb(39, 40, 41);">
+    <button type="button" id="finderOption" class="option-button"
+        onclick="toggleElements('finderOption', 'finderButtons')">Chord finder</button>
+    <button type="button" id="scaleOption" class="option-button"
+        onclick="toggleElements('scaleOption', 'ScaleButtons')">Scale
+        builder</button>
+    <button type="button" id="harmonicCircleOption" class="option-button"
+        onclick="toggleElements('harmonicCircleOption', 'ScaleButtons')">Harmonic circle builder</button>
+    <br>
+    <img src="assets/harmonifylogo.png" width=300 height=113>
+    <br>
+    <button type="button" id="CButton" class="toggleA-button" data-value="C">C</button>
+    <button type="button" id="DButton" class="toggleA-button" data-value="D">D</button>
+    <button type="button" id="EButton" class="toggleA-button" data-value="E">E</button>
+    <button type="button" id="FButton" class="toggleA-button" data-value="F">F</button>
+    <button type="button" id="GButton" class="toggleA-button" data-value="G">G</button>
+    <button type="button" id="AButton" class="toggleA-button" data-value="A">A</button>
+    <button type="button" id="BButton" class="toggleA-button" data-value="B">B</button>
+    <br>
+    <button type="button" id="doubleFlatButton" class="toggleB-button" data-value=DOUBLE_FLAT>𝄫</button>
+    <button type="button" id="flatButton" class="toggleB-button" data-value=FLAT>♭</button>
+    <button type="button" id="naturalButton" class="toggleB-button" data-value=NATURAL>♮</button>
+    <button type="button" id="sharpButton" class="toggleB-button" data-value=SHARP>♯</button>
+    <button type="button" id="doubleSharpButton" class="toggleB-button" data-value=DOUBLE_SHARP>𝄪</button>
+    
+    <div id="finderButtons" class="hidden">
+        <br>
+        Add at least 3 and up to 7 notes to form a chord
+        <br>
+        <button type="button" id="addNoteButton" class="output-button">Add note</button>
+        <button type="button" id="deleteNoteButton" class="output-button">Delete note</button>
+    </div>
+    <div id="selectedNotes" class="hidden"></div>
+    <div id="warning"></div>
+    <div id="ScaleButtons" class="hidden">
+        <select id="scaleSelector" class="dropdown" onchange="handleScale()">
+            <option value="DIATONIC" selected>Diatonic (natural)</option>
+            <option value="MELODIC_ASC">Melodic (ascending)</option>
+            <option value="HARMONIC_MAJOR">Harmonic major</option>
+            <option value="HARMONIC_MINOR">Harmonic minor</option>
+            <option value="BYZANTINE">Byzantine (double harmonic)</option>
+            <option value="NEAPOLITAN_MAJOR">Neapolitan major</option>
+            <option value="NEAPOLITAN_MINOR">Neapolitan minor</option>
+            <option value="HUNGARIAN_MAJOR">Hungarian major</option>
+            <option value="ROMANIAN_MAJOR">Romanian major</option>
+        </select>
+        <select id="modeSelector" class="dropdown">
+            <option value=0 selected>I. Ionian (major)</option>
+            <option value=1>II. Dorian</option>
+            <option value=2>III. Phrygian</option>
+            <option value=3>IV. Lydian</option>
+            <option value=4>V. Mixolydian</option>
+            <option value=5>VI. Aeolian (minor)</option>
+            <option value=6>VII. Locrian</option>
+        </select>
+        <br>
+        Select a root note, a scale and a mode from above, then hit the build button to generate the scale
+        <br>
+        <button type="button" id="scaleButton" class="output-button" onclick="printScale()">Build scale</button>
+    </div>
+    <div id="output"></div>
+    <div id="popup" class="popup"></div>
+    <footer id="footer">
+        <p>&copy; 2024 Harmonify. GPL-3 licensed.</p>
+        <p><a href="https://github.com/jojusuar/Harmonify"><img src="assets/gitlogo.png" alt="GitHub Logo" height="30">GitHub page</a></p>
+    </footer>
+    <script src="WebUtil.js"></script>
+    <script src="MainOptions.js"></script>
+    <script src="ChordFinder.js"></script>
+    <script src="ScaleBuilder.js"></script>
+    <script src="HarmonicCircleBuilder.js"></script>
+</body>
+</html>
