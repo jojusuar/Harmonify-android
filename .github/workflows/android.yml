@@ -55,6 +55,6 @@ jobs:
         with:
            file: ${{ steps.releaseApk.outputs.apkfile }}
            tags: true
-           draft: true
+           draft: false
             
         
