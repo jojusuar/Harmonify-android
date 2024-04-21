@@ -8,7 +8,7 @@ jobs:
     name: Build/Sign APK
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - name: Get Tag
         id: var
@@ -23,6 +23,14 @@ jobs:
           echo \<resources\> >> $path
           echo \<string name=\"google_maps_key\"\>$apiKey\</string\> >> $path
           echo \</resources\> >> $path
+
+
+      - name: Setup JDK
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+          cache: 'gradle'
 
       - name: Build APK
         run: bash ./gradlew assembleRelease
