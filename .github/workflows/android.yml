@@ -53,19 +53,17 @@ jobs:
           RELEASE_KEY_PASSWORD: ${{ secrets.KEYPASSWORD }}
         run: ./gradlew assembleRelease --stacktrace
 
-      - name: Build Release bundle
-        env:
-          RELEASE_KEYSTORE_PASSWORD: ${{ secrets.KEYSTOREPASSWORD }}
-          RELEASE_KEYSTORE_ALIAS: ${{ secrets.ALIAS }}
-          RELEASE_KEY_PASSWORD: ${{ secrets.KEYPASSWORD }}
-        run: ./gradlew bundleRelease --stacktrace
-
       - name: Get release file apk path
         id: releaseApk
         run: echo "apkfile=$(find app/build/outputs/apk/release/*.apk)" >> $GITHUB_OUTPUT
 
-      - name: Upload Release Build to Artifacts
-        uses: actions/upload-artifact@v3
+      - name: Upload To Github Release
+        uses: xresloader/upload-to-github-release@v1.5.0
+        env:
+           GITHUB_TOKEN: ${{ secrets.TOKEN }}
         with:
-           name: release-artifacts
-           path: ${{ steps.releaseApk.outputs.apkfile }}
+           file: ${{ steps.releaseApk.outputs.apkfile }}
+           tags: true
+           draft: true
+            
+        
