@@ -13,3 +13,6 @@ TO-DO:
 - Add sound playback
 - Melody harmonizer by intervals
 - Scale finder given heptatonic melody
+
+
+In case you liked the engine and want to gift me a coffee, here's my donation box! https://ko-fi.com/euclasio
