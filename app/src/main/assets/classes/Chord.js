@@ -187,6 +187,22 @@ class Chord {
             stopFlat9th = true;
         }
 
+        let stopSharp11th = false;
+        if(availableTensions){
+            if(majorThird && getSemitoneDifference(noteMajor3rd, noteSharp11th) != 2){
+                sharpEleventh = false;
+                stopSharp11th =true;
+            }
+            else if(minorThird && getSemitoneDifference(noteMinor3rd, noteSharp11th) != 2){
+                sharpEleventh = false;
+                stopSharp11th =true;
+            }
+            else if((second && !majorThird && !minorThird) && getSemitoneDifference(note2nd, noteSharp11th) != 2){
+                sharpEleventh = false;
+                stopSharp11th =true;
+            }
+        }
+
         //some important properties
         let brokenTriad = !second && !minorThird && !majorThird && !fourth;
         let has7th = minorSeventh || majorSeventh;
@@ -252,6 +268,10 @@ class Chord {
                     perfectEleventh = false;
                     rollback = true;
                 }
+                else if (second && getSemitoneDifference(note2nd, note11th) != 2) {
+                    perfectEleventh = false;
+                    rollback = true;
+                }
             }
             if (allTensions && !rollback) {
                 availableSymbols.push('(11)');
@@ -274,7 +294,7 @@ class Chord {
                     rollback = true;
                 }
             }
-            if (allTensions && !rollback) {
+            if (allTensions && !rollback && !stopSharp11th) {
                 availableSymbols.push('(♯11)');
             }
         }
