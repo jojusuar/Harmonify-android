@@ -2,7 +2,7 @@ Harmonify is a web browser-based music harmony engine.
 
 CAPABILITIES: 
 - Find possible chords formed by a collection of notes
-- Calculate interval vector
+- Calculate pitch class set, normal order, prime form and interval vector of chords
 - Generate harmonic circle in any supported scale for all chords and greek modes
 - Calculate all available tensions for any chord in the circle
 - Generate any heptatonic scale for any root note and mode
