@@ -51,11 +51,15 @@ function findChord() {
     dummy.notes = pseudoScale;
     let possibleRoots = findPossibleRoots();
     divOutput.innerHTML += '<h2>Possible chords: </h2>';
-    divOutput.innerHTML += 'Click on a chord to reveal its interval vector <br>';
+    divOutput.innerHTML += 'Click on a chord to reveal its class set properties<br>';
     for (let root of possibleRoots) {
         let chord = new Chord(root, dummy, true, false);
+        let classSet = chord.getPitchClassSet();
+        let normalOrder = getNormalOrder(classSet);
+        let primeForm = getPrimeForm(normalOrder);
         let vector = chord.getIntervalVector();
-        divOutput.innerHTML += '<button class="chord-button" onclick="showIntervalVector(\'' + vector + '\')"><h1>' + chord.toString() + '</h1></button>';
+        let properties = '<h2>Interval vector: '+vector+'</h2><h2>Pitch class set: ['+classSet+']</h2><h2>Normal order: ['+normalOrder+']</h2><h2>Prime form: ['+primeForm+']</h2>';
+        divOutput.innerHTML += '<button class="chord-button" onclick="showProperties(\'' + properties + '\')"><h1>' + chord.toString() + '</h1></button>';
     }
     
     let chordButtons = document.querySelectorAll('.chord-button');
@@ -205,9 +209,9 @@ deleteNoteButton.addEventListener('click', function () {
     displaySelectedNotes();
 });
 
-function showIntervalVector(vector){
+function showProperties(string){
     clearWarning();
     clearOutput();
     findChord();
-    divOutput.innerHTML += '<h2>Interval vector: '+vector+'</h2>';
+    divOutput.innerHTML += string;
 }

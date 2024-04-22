@@ -214,7 +214,7 @@ class Chord {
                 availableSymbols.push('(9)');
             }
         }
-      
+
         if (sharpNinth) { //deducing the sharp 9th
             let rollback = false;
             if (availableTensions && getSemitoneDifference(root, noteSharp9th) != 2) {
@@ -516,6 +516,29 @@ class Chord {
         return this.symbol;
     }
 
+    getPitchClassSet() {
+        let components = this.components;
+        let array = [];
+        for (let note of components) {
+            let found = false;
+            for (let key of equivalencyMap.keys()) {
+                if (found) {
+                    break;
+                }
+                let pitch = parseInt(key)
+                for (let element of equivalencyMap.get(key)) {
+                    if (note.equals(element)) {
+                        found = true;
+                        array.push(pitch);
+                        break;
+                    }
+                }
+            }
+        }
+        array.sort((a, b) => a - b);
+        return array;
+    }
+
     getIntervalVector() {
         let components = this.components;
         let vector = [0, 0, 0, 0, 0, 0];
@@ -524,27 +547,27 @@ class Chord {
             for (let j = i + 1; j < components.length; j++) {
                 let note2 = components[j];
                 let distance = getSemitoneDifference(note1, note2);
-                if(distance == 1 || distance == 11){
+                if (distance == 1 || distance == 11) {
                     vector[0]++;
                 }
-                else if(distance == 2 || distance == 10){
+                else if (distance == 2 || distance == 10) {
                     vector[1]++;
                 }
-                if(distance == 3 || distance == 9){
+                if (distance == 3 || distance == 9) {
                     vector[2]++;
                 }
-                if(distance == 4 || distance == 8){
+                if (distance == 4 || distance == 8) {
                     vector[3]++;
                 }
-                if(distance == 5 || distance == 7){
+                if (distance == 5 || distance == 7) {
                     vector[4]++;
                 }
-                if(distance == 6){
+                if (distance == 6) {
                     vector[5]++;
                 }
             }
         }
-        return '<'+vector+'>';
+        return '<' + vector + '>';
     }
 }
 
@@ -632,4 +655,120 @@ function any5th(intervals) {
         }
     }
     return [-1, null];
+}
+
+function getNormalOrder(classSet){
+    let clock = new CircularLinkedList();
+    clock.addAll(classSet);
+    let current = clock.reference;
+    let candidates1 = [];
+    for(let i = 0; i<clock.size; i++){
+        let adjacent = current.getNext();
+        let difference = adjacent.data - current.data;
+        if(difference < 0){
+            difference += 12;
+        }
+        candidates1.push([difference, current]);
+        current = adjacent;
+    }
+    candidates1.sort((a, b) => b[0] - a[0]);
+    let biggestDistance = (candidates1[0])[0];
+    let candidates2 = [candidates1[0]];
+    for(let i = 1; i<candidates1.length; i++){
+        let candidate = candidates1[i];
+        if(candidate[0] == biggestDistance){
+            candidates2.push(candidate);
+        }
+    }
+    if(candidates2.length == 1){
+        let array = [];
+        clock.changeReferenceFromNode((candidates2[0])[1].getNext());
+        current = clock.reference;
+        for(let i = 0; i < clock.size; i++){
+            array.push(current.data);
+            current = current.getNext();
+        }
+        return array;
+    }
+    let candidates3 = [];
+    for(let candidate of candidates2){
+        let node = candidate[1];
+        let adjacency = node.getNext().getNext().data - node.getNext().data;
+        if(adjacency < 0){
+            adjacency += 12;
+        }
+        candidates3.push([adjacency, node]);
+    }
+    candidates3.sort((a, b) => a[0] - b[0]);
+    let candidates4 = [candidates3[0]];
+    let smallestAdjacency = (candidates3[0])[0];
+    for(let i = 1; i<candidates3.length; i++){
+        let candidate = candidates3[i];
+        if(candidate[0] == smallestAdjacency){
+            candidates4.push(candidate);
+        }
+    }
+    if(candidates4.length == 1){
+        let array = [];
+        clock.changeReferenceFromNode((candidates4[0])[1].getNext());
+        current = clock.reference;
+        for(let i = 0; i < clock.size; i++){
+            array.push(current.data);
+            current = current.getNext();
+        }
+        return array;
+    }
+    let smallestPitch = -1;
+    let newReference;
+    for(let candidate of candidates4){
+        let pitch = candidate[1].data;
+        if(pitch > smallestPitch){
+            smallestPitch = pitch;
+            newReference = candidate[1];
+        }
+    }
+    clock.changeReference(newReference);
+    let array = [];
+    let current2 = clock.reference;
+    for(let i = 0; i < clock.size; i++){
+        array.push(current2.data);
+        current2 = current2.getNext();
+    }
+    return array;
+}
+
+function getPrimeForm(normalOrder){
+    let array = [0];
+    let distances = [];
+    let lastIndex = normalOrder.length - 1;
+    let clockwise = normalOrder[1]- normalOrder[0]; 
+    let counterclockwise = normalOrder[lastIndex] - normalOrder[lastIndex-1];
+    if( clockwise < 0){
+        clockwise += 12;
+    }
+    if( counterclockwise < 0){
+        counterclockwise += 12;
+    } 
+    if(clockwise <= counterclockwise){
+        for(let i = 0; i < lastIndex; i++){
+            let distance = normalOrder[i+1] - normalOrder[i];
+            if(distance < 0){
+                distance += 12;
+            }
+            distances.push(distance);
+        }
+    }
+    else{
+        for(let i = lastIndex; i > 0; i--){
+            let distance = normalOrder[i] - normalOrder[i-1];
+            if(distance < 0){
+                distance += 12;
+            }
+            distances.push(distance);
+        }
+    }
+    for(let distance of distances){
+        array.push(array[array.length-1]+distance);
+    }
+    return array;
 }

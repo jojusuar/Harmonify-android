@@ -50,6 +50,10 @@ class CircularLinkedList {
         this.reference = this.getNode(index);
     }
 
+    changeReferenceFromNode(node) {
+        this.reference = node;
+    }
+
     toString() {
         let string = "";
         let start = this.reference;

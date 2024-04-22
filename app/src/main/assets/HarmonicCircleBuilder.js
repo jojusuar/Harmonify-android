@@ -12,14 +12,23 @@ function printHarmonicCircle() {
     let myHarmonicCircle = new HarmonicCircle(myScale, allAvailableTensions, allAvailableTensions);
     let currentChord = myHarmonicCircle.chords.reference;
     let formattedComponents = formatComponents(currentChord.getData());
+    let classSet = currentChord.getData().getPitchClassSet();
+    let normalOrder = getNormalOrder(classSet);
+    let primeForm = getPrimeForm(normalOrder);
     let vector = currentChord.getData().getIntervalVector();
-    formattedComponents += '<h2>Interval vector: ' + vector + '</h2>';
+    let properties = '<h2>Interval vector: ' + vector + '</h2><h2>Pitch class set: [' + classSet + ']</h2><h2>Normal order: [' + normalOrder + ']</h2><h2>Prime form: [' + primeForm + ']</h2>';
+    vector = currentChord.getData().getIntervalVector();
+    formattedComponents += properties;
     let htmlCode = '<button class="chord-button" onclick="openPopup(\'' + formattedComponents + '\')"><h1>' + currentChord.getData().toString() + '</h1></button>';
     currentChord = currentChord.getNext();
     while (currentChord !== myHarmonicCircle.chords.reference) {
         formattedComponents = formatComponents(currentChord.getData());
+        classSet = currentChord.getData().getPitchClassSet();
+        normalOrder = getNormalOrder(classSet);
+        primeForm = getPrimeForm(normalOrder);
         vector = currentChord.getData().getIntervalVector();
-        formattedComponents += '<h2>Interval vector: <' + vector + '></h2>';
+        properties = '<h2>Interval vector: ' + vector + '</h2><h2>Pitch class set: [' + classSet + ']</h2><h2>Normal order: [' + normalOrder + ']</h2><h2>Prime form: [' + primeForm + ']</h2>';
+        formattedComponents += properties;
         htmlCode += '<button class="chord-button" onclick="openPopup(\'' + formattedComponents + '\')"><h1>' + currentChord.getData().toString() + '</h1></button>';
         currentChord = currentChord.getNext();
     }
