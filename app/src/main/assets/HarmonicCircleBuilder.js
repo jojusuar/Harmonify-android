@@ -1,6 +1,7 @@
 let allAvailableTensions = false;
 
 function printHarmonicCircle() {
+    clearOutput();
     closePopup();
     let scaleBtn = document.getElementById("scaleButton");
     let scaleCB = document.getElementById("scaleSelector");
@@ -11,28 +12,60 @@ function printHarmonicCircle() {
     let myScale = new Scale(new Note(noteValue, flat, sharp, false, false), new Intervals(choice.value, modeIndex));
     let myHarmonicCircle = new HarmonicCircle(myScale, allAvailableTensions, allAvailableTensions);
     let currentChord = myHarmonicCircle.chords.reference;
-    let formattedComponents = formatComponents(currentChord.getData());
-    let classSet = currentChord.getData().getPitchClassSet();
-    let normalOrder = getNormalOrder(classSet);
-    let primeForm = getPrimeForm(normalOrder);
-    let vector = currentChord.getData().getIntervalVector();
-    let properties = '<h2>Interval vector: ' + vector + '</h2><h2>Pitch class set: [' + classSet + ']</h2><h2>Normal order: [' + normalOrder + ']</h2><h2>Prime form: [' + primeForm + ']</h2>';
-    vector = currentChord.getData().getIntervalVector();
-    formattedComponents += properties;
-    let htmlCode = '<button class="chord-button" onclick="openPopup(\'' + formattedComponents + '\')"><h1>' + currentChord.getData().toString() + '</h1></button>';
-    currentChord = currentChord.getNext();
-    while (currentChord !== myHarmonicCircle.chords.reference) {
-        formattedComponents = formatComponents(currentChord.getData());
-        classSet = currentChord.getData().getPitchClassSet();
-        normalOrder = getNormalOrder(classSet);
-        primeForm = getPrimeForm(normalOrder);
-        vector = currentChord.getData().getIntervalVector();
-        properties = '<h2>Interval vector: ' + vector + '</h2><h2>Pitch class set: [' + classSet + ']</h2><h2>Normal order: [' + normalOrder + ']</h2><h2>Prime form: [' + primeForm + ']</h2>';
-        formattedComponents += properties;
-        htmlCode += '<button class="chord-button" onclick="openPopup(\'' + formattedComponents + '\')"><h1>' + currentChord.getData().toString() + '</h1></button>';
+    let octave = 0;
+    for (let i = 0; i < myHarmonicCircle.chords.size; i++) {
+        let chord = currentChord.data;
+        let button = document.createElement("button");
+        button.classList.add("chord-button");
+        let header = document.createElement("h1");
+        header.textContent = chord.toString();
+        button.appendChild(header);
+        divOutput.appendChild(button);
+        if (i > 0) {
+            let previousPitch = currentChord.previous.data.components[0].getPitchClass();
+            let currentPitch = currentChord.data.components[0].getPitchClass();
+            if (previousPitch > currentPitch) {
+                octave++;
+            }
+        }
+        chord.octave = octave;
+        button.addEventListener("click", function () {
+            let popup = document.getElementById("popup");
+            popup.style.display = "block";
+            popup.innerHTML = '';
+            chord.play(chord.octave);
+            let list = document.createElement("ul");
+            list.classList.add("custom-list");
+            for (let component of chord.components) {
+                let point = document.createElement("li");
+                point.textContent = component.toString();
+                list.appendChild(point);
+            }
+            let vector = chord.getIntervalVector();
+            let classSet = chord.getPitchClassSet()
+            let normalOrder = getNormalOrder(classSet);
+            let primeForm = getPrimeForm(normalOrder);
+            let header = document.createElement('h2');
+            let componentsH = document.createElement('h2');
+            let vectorH = document.createElement('h2');
+            let classSetH = document.createElement('h2');
+            let normalOrderH = document.createElement('h2');
+            let primeFormH = document.createElement('h2');
+            componentsH.appendChild(list);
+            header.textContent = chord.toString() + ' components: ';
+            vectorH.textContent = 'Interval vector: ' + vector;
+            classSetH.textContent = 'Pitch class set: [' + classSet + ']';
+            normalOrderH.textContent = 'Normal order: [' + normalOrder + ']';
+            primeFormH.textContent = 'Prime form: [' + primeForm + ']';
+            popup.appendChild(header);
+            popup.appendChild(componentsH);
+            popup.appendChild(vectorH);
+            popup.appendChild(classSetH);
+            popup.appendChild(normalOrderH);
+            popup.appendChild(primeFormH);
+        });
         currentChord = currentChord.getNext();
     }
-    divOutput.innerHTML = htmlCode;
     let chordButtons = document.querySelectorAll('.chord-button');
     chordButtons.forEach(button => {
         button.addEventListener('click', () => {
@@ -54,10 +87,10 @@ function formatComponents(chord) {
     return string;
 }
 
-function openPopup(string) {
+function openPopup(string, fragment) {
     let popup = document.getElementById("popup");
-    popup.style.display = "block";
     popup.innerHTML = string;
+    popup.style.display = "block";
 }
 
 function closePopup() {

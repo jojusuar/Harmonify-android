@@ -29,16 +29,16 @@ function findChord() {
     selectedNotesCopy.sort((a, b) => {
         let indexA;
         let indexB;
-        for(let key of equivalencyMap.keys()){
-            if(indexA != undefined && indexB != undefined){
+        for (let key of equivalencyMap.keys()) {
+            if (indexA != undefined && indexB != undefined) {
                 break;
             }
-            for(let note of equivalencyMap.get(key)){
-                if(note.equals(a)){
+            for (let note of equivalencyMap.get(key)) {
+                if (note.equals(a)) {
                     indexA = parseInt(key);
                     break;
                 }
-                else if(note.equals(b)){
+                else if (note.equals(b)) {
                     indexB = parseInt(key);
                     break;
                 }
@@ -51,20 +51,46 @@ function findChord() {
     dummy.notes = pseudoScale;
     let possibleRoots = findPossibleRoots();
     divOutput.innerHTML += '<h2>Possible chords: </h2>';
-    divOutput.innerHTML += 'Click on a chord to reveal its class set properties<br>';
+    divOutput.innerHTML += 'Click on a chord to hear it and reveal its class set properties<br>';
     for (let root of possibleRoots) {
         let chord = new Chord(root, dummy, true, false);
-        let classSet = chord.getPitchClassSet();
-        let normalOrder = getNormalOrder(classSet);
-        let primeForm = getPrimeForm(normalOrder);
-        let vector = chord.getIntervalVector();
-        let properties = '<h2>Interval vector: '+vector+'</h2><h2>Pitch class set: ['+classSet+']</h2><h2>Normal order: ['+normalOrder+']</h2><h2>Prime form: ['+primeForm+']</h2>';
-        divOutput.innerHTML += '<button class="chord-button" onclick="showProperties(\'' + properties + '\')"><h1>' + chord.toString() + '</h1></button>';
+        let button = document.createElement("button");
+        button.classList.add("chord-button");
+        let header = document.createElement("h1");
+        header.textContent = chord.toString();
+        button.appendChild(header);
+        divOutput.appendChild(button);
+        button.addEventListener("click", function () {
+            if (divOutput.lastChild.tagName !== "BUTTON") {
+                divOutput.removeChild(divOutput.lastChild);
+                divOutput.removeChild(divOutput.lastChild);
+                divOutput.removeChild(divOutput.lastChild);
+                divOutput.removeChild(divOutput.lastChild);
+            }
+            chord.play(0);
+            let vector = chord.getIntervalVector();
+            let classSet = chord.getPitchClassSet()
+            let normalOrder = getNormalOrder(classSet);
+            let primeForm = getPrimeForm(normalOrder);
+            let vectorH = document.createElement('h2');
+            let classSetH = document.createElement('h2');
+            let normalOrderH = document.createElement('h2');
+            let primeFormH = document.createElement('h2');
+            vectorH.textContent = 'Interval vector: '+vector;
+            classSetH.textContent = 'Pitch class set: ['+classSet+']';
+            normalOrderH.textContent = 'Normal order: ['+normalOrder+']';
+            primeFormH.textContent = 'Prime form: ['+primeForm+']';
+            divOutput.appendChild(vectorH);
+            divOutput.appendChild(classSetH);
+            divOutput.appendChild(normalOrderH);
+            divOutput.appendChild(primeFormH);
+        });
     }
-    
+
     let chordButtons = document.querySelectorAll('.chord-button');
     chordButtons.forEach(button => {
         button.addEventListener('click', () => {
+
             chordButtons.forEach(btn => {
                 btn.style.backgroundColor = 'rgb(39, 40, 41)';
             });
@@ -147,19 +173,19 @@ addNoteButton.addEventListener('click', function () {
         }
         let myNotePos;
         let currentPos;
-        if (myNote.equals(note)){
+        if (myNote.equals(note)) {
             myNotePos = 0;
             currentPos = 0;
         }
-        for(let key of equivalencyMap.keys()){
-            if(myNotePos != undefined && currentPos != undefined){
+        for (let key of equivalencyMap.keys()) {
+            if (myNotePos != undefined && currentPos != undefined) {
                 break;
             }
-            for(let element of equivalencyMap.get(key)){
-                if(element.equals(myNote)){
+            for (let element of equivalencyMap.get(key)) {
+                if (element.equals(myNote)) {
                     myNotePos = parseInt(key);
                 }
-                else if(element.equals(note)){
+                else if (element.equals(note)) {
                     currentPos = parseInt(key);
                 }
             }
@@ -209,9 +235,9 @@ deleteNoteButton.addEventListener('click', function () {
     displaySelectedNotes();
 });
 
-function showProperties(string){
-    clearWarning();
-    clearOutput();
-    findChord();
-    divOutput.innerHTML += string;
+function showProperties(string) {
+    // clearWarning();
+    // clearOutput();
+    // findChord();
+    //divOutput.innerHTML += string;
 }

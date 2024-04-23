@@ -188,18 +188,18 @@ class Chord {
         }
 
         let stopSharp11th = false;
-        if(availableTensions){
-            if(majorThird && getSemitoneDifference(noteMajor3rd, noteSharp11th) != 2){
+        if (availableTensions) {
+            if (majorThird && getSemitoneDifference(noteMajor3rd, noteSharp11th) != 2) {
                 sharpEleventh = false;
-                stopSharp11th =true;
+                stopSharp11th = true;
             }
-            else if(minorThird && getSemitoneDifference(noteMinor3rd, noteSharp11th) != 2){
+            else if (minorThird && getSemitoneDifference(noteMinor3rd, noteSharp11th) != 2) {
                 sharpEleventh = false;
-                stopSharp11th =true;
+                stopSharp11th = true;
             }
-            else if((second && !majorThird && !minorThird) && getSemitoneDifference(note2nd, noteSharp11th) != 2){
+            else if ((second && !majorThird && !minorThird) && getSemitoneDifference(note2nd, noteSharp11th) != 2) {
                 sharpEleventh = false;
-                stopSharp11th =true;
+                stopSharp11th = true;
             }
         }
 
@@ -532,6 +532,23 @@ class Chord {
         this.symbol = symbol;
     }
 
+    play(reference) {
+        let notes = this.components;
+        let octave = reference;
+        let sounds = [audioMap.get(notes[0].getPitchClass())[octave]];
+        for (let i = 1; i < this.components.length; i++) {
+            let previousPitch = notes[i-1].getPitchClass();
+            let currentPitch = notes[i].getPitchClass();
+            if(previousPitch > currentPitch){
+                octave++;
+            }
+            sounds.push(audioMap.get(currentPitch)[octave]);
+        }
+        for(let sound of sounds){
+            sound.play();
+        }
+    }
+
     toString() {
         return this.symbol;
     }
@@ -677,15 +694,15 @@ function any5th(intervals) {
     return [-1, null];
 }
 
-function getNormalOrder(classSet){
+function getNormalOrder(classSet) {
     let clock = new CircularLinkedList();
     clock.addAll(classSet);
     let current = clock.reference;
     let candidates1 = [];
-    for(let i = 0; i<clock.size; i++){
+    for (let i = 0; i < clock.size; i++) {
         let adjacent = current.getNext();
         let difference = adjacent.data - current.data;
-        if(difference < 0){
+        if (difference < 0) {
             difference += 12;
         }
         candidates1.push([difference, current]);
@@ -694,27 +711,27 @@ function getNormalOrder(classSet){
     candidates1.sort((a, b) => b[0] - a[0]);
     let biggestDistance = (candidates1[0])[0];
     let candidates2 = [candidates1[0]];
-    for(let i = 1; i<candidates1.length; i++){
+    for (let i = 1; i < candidates1.length; i++) {
         let candidate = candidates1[i];
-        if(candidate[0] == biggestDistance){
+        if (candidate[0] == biggestDistance) {
             candidates2.push(candidate);
         }
     }
-    if(candidates2.length == 1){
+    if (candidates2.length == 1) {
         let array = [];
         clock.changeReferenceFromNode((candidates2[0])[1].getNext());
         current = clock.reference;
-        for(let i = 0; i < clock.size; i++){
+        for (let i = 0; i < clock.size; i++) {
             array.push(current.data);
             current = current.getNext();
         }
         return array;
     }
     let candidates3 = [];
-    for(let candidate of candidates2){
+    for (let candidate of candidates2) {
         let node = candidate[1];
         let adjacency = node.getNext().getNext().data - node.getNext().data;
-        if(adjacency < 0){
+        if (adjacency < 0) {
             adjacency += 12;
         }
         candidates3.push([adjacency, node]);
@@ -722,17 +739,17 @@ function getNormalOrder(classSet){
     candidates3.sort((a, b) => a[0] - b[0]);
     let candidates4 = [candidates3[0]];
     let smallestAdjacency = (candidates3[0])[0];
-    for(let i = 1; i<candidates3.length; i++){
+    for (let i = 1; i < candidates3.length; i++) {
         let candidate = candidates3[i];
-        if(candidate[0] == smallestAdjacency){
+        if (candidate[0] == smallestAdjacency) {
             candidates4.push(candidate);
         }
     }
-    if(candidates4.length == 1){
+    if (candidates4.length == 1) {
         let array = [];
         clock.changeReferenceFromNode((candidates4[0])[1].getNext());
         current = clock.reference;
-        for(let i = 0; i < clock.size; i++){
+        for (let i = 0; i < clock.size; i++) {
             array.push(current.data);
             current = current.getNext();
         }
@@ -740,9 +757,9 @@ function getNormalOrder(classSet){
     }
     let smallestPitch = -1;
     let newReference;
-    for(let candidate of candidates4){
+    for (let candidate of candidates4) {
         let pitch = candidate[1].data;
-        if(pitch > smallestPitch){
+        if (pitch > smallestPitch) {
             smallestPitch = pitch;
             newReference = candidate[1];
         }
@@ -750,45 +767,45 @@ function getNormalOrder(classSet){
     clock.changeReference(newReference);
     let array = [];
     let current2 = clock.reference;
-    for(let i = 0; i < clock.size; i++){
+    for (let i = 0; i < clock.size; i++) {
         array.push(current2.data);
         current2 = current2.getNext();
     }
     return array;
 }
 
-function getPrimeForm(normalOrder){
+function getPrimeForm(normalOrder) {
     let array = [0];
     let distances = [];
     let lastIndex = normalOrder.length - 1;
-    let clockwise = normalOrder[1]- normalOrder[0]; 
-    let counterclockwise = normalOrder[lastIndex] - normalOrder[lastIndex-1];
-    if( clockwise < 0){
+    let clockwise = normalOrder[1] - normalOrder[0];
+    let counterclockwise = normalOrder[lastIndex] - normalOrder[lastIndex - 1];
+    if (clockwise < 0) {
         clockwise += 12;
     }
-    if( counterclockwise < 0){
+    if (counterclockwise < 0) {
         counterclockwise += 12;
-    } 
-    if(clockwise <= counterclockwise){
-        for(let i = 0; i < lastIndex; i++){
-            let distance = normalOrder[i+1] - normalOrder[i];
-            if(distance < 0){
+    }
+    if (clockwise <= counterclockwise) {
+        for (let i = 0; i < lastIndex; i++) {
+            let distance = normalOrder[i + 1] - normalOrder[i];
+            if (distance < 0) {
                 distance += 12;
             }
             distances.push(distance);
         }
     }
-    else{
-        for(let i = lastIndex; i > 0; i--){
-            let distance = normalOrder[i] - normalOrder[i-1];
-            if(distance < 0){
+    else {
+        for (let i = lastIndex; i > 0; i--) {
+            let distance = normalOrder[i] - normalOrder[i - 1];
+            if (distance < 0) {
                 distance += 12;
             }
             distances.push(distance);
         }
     }
-    for(let distance of distances){
-        array.push(array[array.length-1]+distance);
+    for (let distance of distances) {
+        array.push(array[array.length - 1] + distance);
     }
     return array;
 }

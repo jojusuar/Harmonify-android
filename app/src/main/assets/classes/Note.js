@@ -40,6 +40,18 @@ class Note {
         }
         return string;
     }
+
+    getPitchClass() {
+        for (let key of equivalencyMap.keys()) {
+            let pitch = parseInt(key)
+            for (let element of equivalencyMap.get(key)) {
+                if (this.equals(element)) {
+                    return pitch;
+                }
+            }
+        }
+        return null;
+    }
 }
 
 let equivalencyMap = new Map(); //manually mapping the equivalences may seem hacky, but the overhead and code complexity caused by calculating them all back and forth wasn't worth it
@@ -55,6 +67,21 @@ equivalencyMap.set(8, [new Note("G", false, true, false, false), new Note("A", t
 equivalencyMap.set(9, [new Note("A", false, false, false, false), new Note("G", false, false, false, true), new Note("B", false, false, true, false)]);
 equivalencyMap.set(10, [new Note("A", false, true, false, false), new Note("B", true, false, false, false), new Note("C", false, false, true, false)]);
 equivalencyMap.set(11, [new Note("B", false, false, false, false), new Note("C", true, false, false, false), new Note("A", false, false, false, true)]);
+
+const audioSrc = "assets/audio/";
+let audioMap = new Map();
+audioMap.set(0, [new Audio(audioSrc + "10.ogg"), new Audio(audioSrc + "20.ogg"), new Audio(audioSrc + "30.ogg")]);
+audioMap.set(1, [new Audio(audioSrc + "11.ogg"), new Audio(audioSrc + "21.ogg"), new Audio(audioSrc + "31.ogg")]);
+audioMap.set(2, [new Audio(audioSrc + "12.ogg"), new Audio(audioSrc + "22.ogg"), new Audio(audioSrc + "32.ogg")]);
+audioMap.set(3, [new Audio(audioSrc + "13.ogg"), new Audio(audioSrc + "23.ogg"), new Audio(audioSrc + "33.ogg")]);
+audioMap.set(4, [new Audio(audioSrc + "14.ogg"), new Audio(audioSrc + "24.ogg"), new Audio(audioSrc + "34.ogg")]);
+audioMap.set(5, [new Audio(audioSrc + "15.ogg"), new Audio(audioSrc + "25.ogg"), new Audio(audioSrc + "35.ogg")]);
+audioMap.set(6, [new Audio(audioSrc + "16.ogg"), new Audio(audioSrc + "26.ogg"), new Audio(audioSrc + "36.ogg")]);
+audioMap.set(7, [new Audio(audioSrc + "17.ogg"), new Audio(audioSrc + "27.ogg"), new Audio(audioSrc + "37.ogg")]);
+audioMap.set(8, [new Audio(audioSrc + "18.ogg"), new Audio(audioSrc + "28.ogg"), new Audio(audioSrc + "38.ogg")]);
+audioMap.set(9, [new Audio(audioSrc + "19.ogg"), new Audio(audioSrc + "29.ogg"), new Audio(audioSrc + "39.ogg")]);
+audioMap.set(10, [new Audio(audioSrc + "1A.ogg"), new Audio(audioSrc + "2A.ogg"), new Audio(audioSrc + "3A.ogg")]);
+audioMap.set(11, [new Audio(audioSrc + "1B.ogg"), new Audio(audioSrc + "2B.ogg"), new Audio(audioSrc + "3B.ogg")]);
 
 function getSemitoneDifference(note1, note2) {
     let rule = ["C", "D", "E", "F", "G", "A", "B"];

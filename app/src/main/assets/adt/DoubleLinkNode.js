@@ -8,7 +8,7 @@ class DoubleLinkNode {
         this.previous = node;
     }
     getPrevious(){
-        return this.next;
+        return this.previous;
     }
     setNext(node){
         this.next = node;

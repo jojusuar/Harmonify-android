@@ -97,7 +97,7 @@ function toggleElements(buttonID, divID) {
         });
     }
     else if (buttonID === 'harmonicCircleOption') {
-        scaleDiv.innerHTML = scaleDropdowns + '<br> Select a tonic chord, a scale and a mode from above, then hit the build button to generate the harmonic circle <br> <button type="button" id="harmonicCircleButton" class="output-button" onclick="printHarmonicCircle()">Build harmonic circle</button> <br> Click on any chord to reveal its components <br> Show all available tensions <label class="switch"><input type="checkbox" onclick="toggleTensions()"><span class="slider round"></span></label>';
+        scaleDiv.innerHTML = scaleDropdowns + '<br> Select a tonic chord, a scale and a mode from above, then hit the build button to generate the harmonic circle <br> <button type="button" id="harmonicCircleButton" class="output-button" onclick="printHarmonicCircle()">Build harmonic circle</button> <br> Click on any chord to hear it and reveal its components <br> Show all available tensions <label class="switch"><input type="checkbox" onclick="toggleTensions()"><span class="slider round"></span></label>';
         alterButtons.forEach(button => {
             if (button.id == "doubleFlatButton" || button.id == "doubleSharpButton") {
                 button.style.display = 'none';
