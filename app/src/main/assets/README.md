@@ -1,6 +1,8 @@
-Harmonify is a web browser-based music harmony engine.
+Harmonify is a web browser-based music harmony engine
+=========================================
 
-CAPABILITIES: 
+Capabilities: 
+--------------------
 - Find possible chords formed by a collection of notes
 - Calculate pitch class set, normal order, prime form and interval vector of chords
 - Generate harmonic circle in any supported scale for all chords and greek modes
@@ -9,11 +11,14 @@ CAPABILITIES:
 - Sound playback for any chord
 
 TO-DO:
+--------------------
 - Chord progression randomizer given n-length
 - Chord components calculator given any input chord
 - Melody harmonizer by intervals
 - Scale finder given heptatonic melody
 
+Related links:
+--------------------
 
 Android version at https://github.com/jojusuar/Harmonify-android
 
