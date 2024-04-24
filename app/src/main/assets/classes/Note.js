@@ -70,18 +70,18 @@ equivalencyMap.set(11, [new Note("B", false, false, false, false), new Note("C",
 
 const audioSrc = "assets/audio/";
 let audioMap = new Map();
-audioMap.set(0, [new Audio(audioSrc + "10.ogg"), new Audio(audioSrc + "20.ogg"), new Audio(audioSrc + "30.ogg")]);
-audioMap.set(1, [new Audio(audioSrc + "11.ogg"), new Audio(audioSrc + "21.ogg"), new Audio(audioSrc + "31.ogg")]);
-audioMap.set(2, [new Audio(audioSrc + "12.ogg"), new Audio(audioSrc + "22.ogg"), new Audio(audioSrc + "32.ogg")]);
-audioMap.set(3, [new Audio(audioSrc + "13.ogg"), new Audio(audioSrc + "23.ogg"), new Audio(audioSrc + "33.ogg")]);
-audioMap.set(4, [new Audio(audioSrc + "14.ogg"), new Audio(audioSrc + "24.ogg"), new Audio(audioSrc + "34.ogg")]);
-audioMap.set(5, [new Audio(audioSrc + "15.ogg"), new Audio(audioSrc + "25.ogg"), new Audio(audioSrc + "35.ogg")]);
-audioMap.set(6, [new Audio(audioSrc + "16.ogg"), new Audio(audioSrc + "26.ogg"), new Audio(audioSrc + "36.ogg")]);
-audioMap.set(7, [new Audio(audioSrc + "17.ogg"), new Audio(audioSrc + "27.ogg"), new Audio(audioSrc + "37.ogg")]);
-audioMap.set(8, [new Audio(audioSrc + "18.ogg"), new Audio(audioSrc + "28.ogg"), new Audio(audioSrc + "38.ogg")]);
-audioMap.set(9, [new Audio(audioSrc + "19.ogg"), new Audio(audioSrc + "29.ogg"), new Audio(audioSrc + "39.ogg")]);
-audioMap.set(10, [new Audio(audioSrc + "1A.ogg"), new Audio(audioSrc + "2A.ogg"), new Audio(audioSrc + "3A.ogg")]);
-audioMap.set(11, [new Audio(audioSrc + "1B.ogg"), new Audio(audioSrc + "2B.ogg"), new Audio(audioSrc + "3B.ogg")]);
+audioMap.set(0, [null, new Audio(audioSrc + "10.ogg"), new Audio(audioSrc + "20.ogg"), new Audio(audioSrc + "30.ogg"), new Audio(audioSrc + "40.ogg")]);
+audioMap.set(1, [null, new Audio(audioSrc + "11.ogg"), new Audio(audioSrc + "21.ogg"), new Audio(audioSrc + "31.ogg"), new Audio(audioSrc + "41.ogg")]);
+audioMap.set(2, [null, new Audio(audioSrc + "12.ogg"), new Audio(audioSrc + "22.ogg"), new Audio(audioSrc + "32.ogg"), new Audio(audioSrc + "42.ogg")]);
+audioMap.set(3, [null, new Audio(audioSrc + "13.ogg"), new Audio(audioSrc + "23.ogg"), new Audio(audioSrc + "33.ogg"), new Audio(audioSrc + "43.ogg")]);
+audioMap.set(4, [null, new Audio(audioSrc + "14.ogg"), new Audio(audioSrc + "24.ogg"), new Audio(audioSrc + "34.ogg"), new Audio(audioSrc + "44.ogg")]);
+audioMap.set(5, [new Audio(audioSrc + "05.ogg"), new Audio(audioSrc + "15.ogg"), new Audio(audioSrc + "25.ogg"), new Audio(audioSrc + "35.ogg"), new Audio(audioSrc + "45.ogg")]);
+audioMap.set(6, [new Audio(audioSrc + "06.ogg"), new Audio(audioSrc + "16.ogg"), new Audio(audioSrc + "26.ogg"), new Audio(audioSrc + "36.ogg"), null]);
+audioMap.set(7, [new Audio(audioSrc + "07.ogg"), new Audio(audioSrc + "17.ogg"), new Audio(audioSrc + "27.ogg"), new Audio(audioSrc + "37.ogg"), null]);
+audioMap.set(8, [new Audio(audioSrc + "08.ogg"), new Audio(audioSrc + "18.ogg"), new Audio(audioSrc + "28.ogg"), new Audio(audioSrc + "38.ogg"), null]);
+audioMap.set(9, [new Audio(audioSrc + "09.ogg"), new Audio(audioSrc + "19.ogg"), new Audio(audioSrc + "29.ogg"), new Audio(audioSrc + "39.ogg"), null]);
+audioMap.set(10, [new Audio(audioSrc + "0A.ogg"), new Audio(audioSrc + "1A.ogg"), new Audio(audioSrc + "2A.ogg"), new Audio(audioSrc + "3A.ogg"), null]);
+audioMap.set(11, [new Audio(audioSrc + "0B.ogg"), new Audio(audioSrc + "1B.ogg"), new Audio(audioSrc + "2B.ogg"), new Audio(audioSrc + "3B.ogg"), null]);
 
 function getSemitoneDifference(note1, note2) {
     let rule = ["C", "D", "E", "F", "G", "A", "B"];

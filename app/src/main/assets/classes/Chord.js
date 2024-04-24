@@ -464,6 +464,13 @@ class Chord {
         let tensionString = ''; //tension calculation
         let breakpoint;
         if (has7th && perfectNinth && perfectEleventh && perfectThirteenth && allTensions) {
+            tensionString += '13add11';
+        }
+        else if (has7th && perfectNinth && perfectThirteenth && allTensions) {
+            breakpoint = 2;
+            availableSymbols = availableSymbols.filter(function(item) {
+                return item !== '(13)';
+            });
             tensionString += '13';
         }
         else if (has7th && perfectNinth && perfectEleventh && allTensions) {
@@ -537,14 +544,14 @@ class Chord {
         let octave = reference;
         let sounds = [audioMap.get(notes[0].getPitchClass())[octave]];
         for (let i = 1; i < this.components.length; i++) {
-            let previousPitch = notes[i-1].getPitchClass();
+            let previousPitch = notes[i - 1].getPitchClass();
             let currentPitch = notes[i].getPitchClass();
-            if(previousPitch > currentPitch){
+            if (previousPitch > currentPitch) {
                 octave++;
             }
             sounds.push(audioMap.get(currentPitch)[octave]);
         }
-        for(let sound of sounds){
+        for (let sound of sounds) {
             sound.play();
         }
     }

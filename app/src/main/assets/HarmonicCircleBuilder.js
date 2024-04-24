@@ -13,6 +13,10 @@ function printHarmonicCircle() {
     let myHarmonicCircle = new HarmonicCircle(myScale, allAvailableTensions, allAvailableTensions);
     let currentChord = myHarmonicCircle.chords.reference;
     let octave = 0;
+    let startingPitch = currentChord.data.components[0].getPitchClass();
+    if (startingPitch < 5) {
+        octave++;
+    }
     for (let i = 0; i < myHarmonicCircle.chords.size; i++) {
         let chord = currentChord.data;
         let button = document.createElement("button");

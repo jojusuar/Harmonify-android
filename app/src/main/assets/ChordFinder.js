@@ -67,7 +67,7 @@ function findChord() {
                 divOutput.removeChild(divOutput.lastChild);
                 divOutput.removeChild(divOutput.lastChild);
             }
-            chord.play(0);
+            chord.play(1);
             let vector = chord.getIntervalVector();
             let classSet = chord.getPitchClassSet()
             let normalOrder = getNormalOrder(classSet);
