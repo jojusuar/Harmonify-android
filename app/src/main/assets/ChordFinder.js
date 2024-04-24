@@ -50,6 +50,22 @@ function findChord() {
     let dummy = new Scale();
     dummy.notes = pseudoScale;
     let possibleRoots = findPossibleRoots();
+    possibleRoots.sort((a, b) => {
+        let indexA;
+        let indexB;
+        for (let i = 0; i < selectedNotes.length; i++) {
+            if (indexA != undefined && indexB != undefined) {
+                break;
+            }
+            if (a.equals(selectedNotes[i])) {
+                indexA = i;
+            }
+            if (b.equals(selectedNotes[i])) {
+                indexB = i;
+            }
+        }
+        return indexA - indexB;
+    });
     divOutput.innerHTML += '<h2>Possible chords: </h2>';
     divOutput.innerHTML += 'Click on a chord to hear it and reveal its class set properties<br>';
     for (let root of possibleRoots) {
@@ -58,6 +74,9 @@ function findChord() {
         button.classList.add("chord-button");
         let header = document.createElement("h1");
         header.textContent = chord.toString();
+        if (!chord.components[0].equals(selectedNotes[0])) {
+            header.textContent = chord.toString() + '/' + selectedNotes[0].toString();
+        }
         button.appendChild(header);
         divOutput.appendChild(button);
         button.addEventListener("click", function () {
@@ -76,10 +95,10 @@ function findChord() {
             let classSetH = document.createElement('h2');
             let normalOrderH = document.createElement('h2');
             let primeFormH = document.createElement('h2');
-            vectorH.textContent = 'Interval vector: '+vector;
-            classSetH.textContent = 'Pitch class set: ['+classSet+']';
-            normalOrderH.textContent = 'Normal order: ['+normalOrder+']';
-            primeFormH.textContent = 'Prime form: ['+primeForm+']';
+            vectorH.textContent = 'Interval vector: ' + vector;
+            classSetH.textContent = 'Pitch class set: [' + classSet + ']';
+            normalOrderH.textContent = 'Normal order: [' + normalOrder + ']';
+            primeFormH.textContent = 'Prime form: [' + primeForm + ']';
             divOutput.appendChild(vectorH);
             divOutput.appendChild(classSetH);
             divOutput.appendChild(normalOrderH);
@@ -103,47 +122,69 @@ function findChord() {
 function findPossibleRoots() {
     let intervals = noteGraph.edges;
     let possibleRoots = [];
-    if (intervals.has(7) && intervals.get(7).length > 0) {
-        for (let interval of intervals.get(7)) {   // looking for perfect fifths
-            possibleRoots.push(interval.source.content);
+    let with3rd = [];
+    if (intervals.has(3) && intervals.get(3).length > 0) {
+        for (let interval of intervals.get(3)) {
+            with3rd.push(interval.source.content);
         }
     }
-    else if ((intervals.has(6) && intervals.get(6).length > 0) || (intervals.has(8) && intervals.get(8).length > 0)) { //if perfect fifths don't appear, look for altered fifths
-        if (intervals.has(6)) {
-            for (let interval of intervals.get(6)) {
+    if (intervals.has(4) && intervals.get(4).length > 0) {
+        for (let interval of intervals.get(4)) {
+            with3rd.push(interval.source.content);
+        }
+    }
+    let with7th = [];
+    if (intervals.has(10) && intervals.get(10).length > 0) {
+        for (let interval of intervals.get(10)) {
+            with7th.push(interval.source.content);
+        }
+    }
+    if (intervals.has(11) && intervals.get(11).length > 0) {
+        for (let interval of intervals.get(11)) {
+            with7th.push(interval.source.content);
+        }
+    }
+    for (let note1 of with3rd) {  //the point is looking for notes that can form at least a 3rd and a 7th
+        for (let note2 of with7th) {
+            if (note1.equals(note2)) {
+                possibleRoots.push(note1);
+            }
+        }
+    }
+    if (possibleRoots.length == 0) {
+        if (intervals.has(7) && intervals.get(7).length > 0) {
+            for (let interval of intervals.get(7)) {   // if no note can do that, look for fifths
                 possibleRoots.push(interval.source.content);
             }
         }
-        if (intervals.has(8)) {
-            for (let interval of intervals.get(8)) {
-                let augmentedFifth = interval.target.content;
-                if (intervals.has(3) && intervals.get(3).length > 0) { //if still nothing, triads can't be formed. proceed by searching for thirds
-                    for (let interval2 of intervals.get(3)) {
-                        if (augmentedFifth.equals(interval2.source.content)) {
-                            possibleRoots.push(augmentedFifth); //A minor 3rd and augmented 5th triad is an inversion of a major triad where the 5th is the root
-                        }
-                    }
-                }
-                else {
+        else if ((intervals.has(6) && intervals.get(6).length > 0) || (intervals.has(8) && intervals.get(8).length > 0)) { //if perfect fifths don't appear, look for altered fifths
+            if (intervals.has(6)) {
+                for (let interval of intervals.get(6)) {
                     possibleRoots.push(interval.source.content);
                 }
             }
-        }
-    }
-    else if ((intervals.has(3) && intervals.get(3).length > 0) || (intervals.has(4) && intervals.get(4).length > 0)) { //if still nothing, triads can't be formed. proceed by searching for thirds
-        if (intervals.has(3)) {
-            for (let interval of intervals.get(3)) {
-                possibleRoots.push(interval.source.content);
+            if (intervals.has(8)) {
+                for (let interval of intervals.get(8)) {
+                    let augmentedFifth = interval.target.content;
+                    if (intervals.has(3) && intervals.get(3).length > 0) {
+                        for (let interval2 of intervals.get(3)) {
+                            if (augmentedFifth.equals(interval2.source.content)) {
+                                possibleRoots.push(augmentedFifth); //A minor 3rd and augmented 5th triad is an inversion of a major triad where the 5th is the root
+                            }
+                        }
+                    }
+                    else {
+                        possibleRoots.push(interval.source.content);
+                    }
+                }
             }
         }
-        if (intervals.has(4)) {
-            for (let interval of intervals.get(4)) {
-                possibleRoots.push(interval.source.content);
-            }
+        else if (with3rd.length > 0) { //if still nothing, triads can't be formed. proceed by searching for thirds
+            possibleRoots.push(...with3rd);
         }
-    }
-    else { // if not even thirds can be found, just pick the first note as root and calculate whatever the hell just got input'd
-        possibleRoots.push(noteGraph.vertices[0].content);
+        else { // if not even thirds can be found, just pick the first note as root and calculate whatever the hell just got input'd
+            possibleRoots.push(noteGraph.vertices[0].content);
+        }
     }
     possibleRoots = possibleRoots.reduce((accumulator, currentValue) => {
         if (!accumulator.includes(currentValue)) {
