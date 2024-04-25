@@ -52,6 +52,12 @@ class Note {
         }
         return null;
     }
+
+    play(octave){
+        let pitch = this.getPitchClass();
+        let sound = audioMap.get(pitch)[octave];
+        sound.play();
+    }
 }
 
 let equivalencyMap = new Map(); //manually mapping the equivalences may seem hacky, but the overhead and code complexity caused by calculating them all back and forth wasn't worth it

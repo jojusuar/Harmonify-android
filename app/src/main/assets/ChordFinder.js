@@ -88,7 +88,13 @@ function findChord() {
                 divOutput.removeChild(divOutput.lastChild);
                 divOutput.removeChild(divOutput.lastChild);
             }
-            chord.play(1);
+            if(chord.components[0].getPitchClass < 5){ //chords above F are sounding too sharp
+                chord.play(1);
+            }
+            else{
+                chord.play(0);   
+            }
+            
             let vector = chord.getIntervalVector();
             let classSet = chord.getPitchClassSet()
             let normalOrder = getNormalOrder(classSet);
