@@ -13,6 +13,10 @@ jobs:
       - name: Checking out branch
         uses: actions/checkout@v3
 
+      - name: Extract version number
+        id: extract_version
+        run: echo "::set-output name=version::${GITHUB_REF#refs/tags/}"
+
       - name: Setup Java
         uses: actions/setup-java@v3
         with:
@@ -35,7 +39,7 @@ jobs:
         run: chmod +x gradlew
 
       - name: Build Release apk
-        run: ./gradlew assembleRelease --stacktrace
+        run: ./gradlew assembleRelease -Pversion=${{ steps.extract_version.outputs.version }}
 
       - name: Sign app APK
         uses: r0adkll/sign-android-release@v1
