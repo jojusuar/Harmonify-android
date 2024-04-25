@@ -6,6 +6,7 @@ let deleteNoteButton = document.getElementById('deleteNoteButton');
 deleteNoteButton.style.display = 'none';
 let selectedNotes = [];
 let noteGraph = new Graph(true);
+let strict = false;
 
 let foundChord = '<h1> *still cooking* </h1>';
 
@@ -80,6 +81,7 @@ function findChord() {
         button.appendChild(header);
         divOutput.appendChild(button);
         button.addEventListener("click", function () {
+            clearWarning();
             if (divOutput.lastChild.tagName !== "BUTTON") {
                 divOutput.removeChild(divOutput.lastChild);
                 divOutput.removeChild(divOutput.lastChild);
@@ -123,6 +125,10 @@ function findPossibleRoots() {
     let intervals = noteGraph.edges;
     let possibleRoots = [];
     let with3rd = [];
+    if (strict) {
+        possibleRoots.push(noteGraph.vertices[0].content);
+        return possibleRoots;
+    }
     if (intervals.has(3) && intervals.get(3).length > 0) {
         for (let interval of intervals.get(3)) {
             with3rd.push(interval.source.content);
@@ -181,9 +187,6 @@ function findPossibleRoots() {
         }
         else if (with3rd.length > 0) { //if still nothing, triads can't be formed. proceed by searching for thirds
             possibleRoots.push(...with3rd);
-        }
-        else { // if not even thirds can be found, just pick the first note as root and calculate whatever the hell just got input'd
-            possibleRoots.push(noteGraph.vertices[0].content);
         }
     }
     possibleRoots = possibleRoots.reduce((accumulator, currentValue) => {
@@ -276,9 +279,11 @@ deleteNoteButton.addEventListener('click', function () {
     displaySelectedNotes();
 });
 
-function showProperties(string) {
-    // clearWarning();
-    // clearOutput();
-    // findChord();
-    //divOutput.innerHTML += string;
+function toggleStrict() {
+    strict = !strict;
+    if (selectedNotes.length > 2) {
+        clearWarning();
+        clearOutput();
+        findChord();
+    }
 }

@@ -551,8 +551,10 @@ class Chord {
             }
             sounds.push(audioMap.get(currentPitch)[octave]);
         }
+        let wait = 0;
         for (let sound of sounds) {
-            sound.play();
+            playWithDelay(sound, wait);
+            wait += 50;
         }
     }
 
@@ -815,4 +817,10 @@ function getPrimeForm(normalOrder) {
         array.push(array[array.length - 1] + distance);
     }
     return array;
+}
+
+function playWithDelay(audio, delay) {
+    setTimeout(function() {
+        audio.play();
+    }, delay);
 }
