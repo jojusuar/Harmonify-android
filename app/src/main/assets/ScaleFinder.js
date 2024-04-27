@@ -77,7 +77,7 @@ deleteButton.addEventListener("click", function () {
     clearOutput();
     selectedNotes.pop();
     displayNotesAsButtons();
-    if (selectedNotes.length < 2) {
+    if (selectedNotes.length == 0) {
         deleteButton.style.display = 'none';
     }
 });
