@@ -88,7 +88,7 @@ function findChord() {
                 divOutput.removeChild(divOutput.lastChild);
                 divOutput.removeChild(divOutput.lastChild);
             }
-            if(chord.components[0].getPitchClass() < 7){ 
+            if(chord.components[0].getPitchClass() < 9){ 
                 chord.play(1);
             }
             else{

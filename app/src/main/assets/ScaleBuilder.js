@@ -26,11 +26,8 @@ function printScale() {
     let root = myScale.notes.reference.data;
     let top = new Note(root.symbol, root.flat, root.sharp, root.doubleFlat, root.doubleSharp);
     myScale.notes.add(top);
-    let octave = 0;
+    let octave = 1;
     let startingPitch = root.getPitchClass();
-    if (startingPitch < 5) {
-        octave++;
-    }
     let current = myScale.notes.reference;
     for (let i = 0; i < myScale.notes.size; i++) {
         let note = current.data;
