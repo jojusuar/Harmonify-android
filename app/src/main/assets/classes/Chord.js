@@ -98,17 +98,9 @@ class Chord {
         }
         else {
             let quality = any5th(intervals);
-            if (quality[0] == 0) {
-                diminishedFifth = true;
-                noteDiminished5th = quality[1];
-            }
-            else if (quality[0] == 1) {
+            if (quality[0] == 1) {
                 perfectFifth = true;
                 note5th = quality[1];
-            }
-            else if (quality[0] == 2) {
-                augmentedFifth = true;
-                noteAugmented5th = quality[1];
             }
         }
 
@@ -468,7 +460,7 @@ class Chord {
         }
         else if (has7th && perfectNinth && perfectThirteenth && allTensions) {
             breakpoint = 2;
-            availableSymbols = availableSymbols.filter(function(item) {
+            availableSymbols = availableSymbols.filter(function (item) {
                 return item !== '(13)';
             });
             tensionString += '13';
@@ -554,7 +546,7 @@ class Chord {
         let wait = 0;
         for (let sound of sounds) {
             playWithDelay(sound, wait);
-            wait += 50;
+            wait += 75;
         }
     }
 
@@ -687,17 +679,9 @@ function any5th(intervals) {
     for (let i = 0; i < intervals.length; i++) {
         let current = intervals[i].interval;
         let note = intervals[i].note;
-        if (intervalMap.get(6).includes(current)) { //looking for any other interval that can determine the 5th
-            intervals.splice(i, 1);
-            return [0, note]; //for diminished
-        }
-        else if (intervalMap.get(7).includes(current)) {
+        if (intervalMap.get(7).includes(current)) {
             intervals.splice(i, 1);
             return [1, note]; //for perfect
-        }
-        else if (intervalMap.get(8).includes(current)) {
-            intervals.splice(i, 1);
-            return [2, note]; //for augmented
         }
     }
     return [-1, null];
@@ -820,7 +804,7 @@ function getPrimeForm(normalOrder) {
 }
 
 function playWithDelay(audio, delay) {
-    setTimeout(function() {
+    setTimeout(function () {
         audio.play();
     }, delay);
 }

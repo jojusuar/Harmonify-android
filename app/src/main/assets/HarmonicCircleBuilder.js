@@ -14,7 +14,7 @@ function printHarmonicCircle() {
     let currentChord = myHarmonicCircle.chords.reference;
     let octave = 0;
     let startingPitch = currentChord.data.components[0].getPitchClass();
-    if (startingPitch < 5) {
+    if (startingPitch < 4) {
         octave++;
     }
     for (let i = 0; i < myHarmonicCircle.chords.size; i++) {

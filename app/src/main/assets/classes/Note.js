@@ -53,7 +53,7 @@ class Note {
         return null;
     }
 
-    play(octave){
+    play(octave) {
         let pitch = this.getPitchClass();
         let sound = audioMap.get(pitch)[octave];
         sound.play();
@@ -75,19 +75,36 @@ equivalencyMap.set(10, [new Note("A", false, true, false, false), new Note("B", 
 equivalencyMap.set(11, [new Note("B", false, false, false, false), new Note("C", true, false, false, false), new Note("A", false, false, false, true)]);
 
 const audioSrc = "assets/audio/";
-let audioMap = new Map();
-audioMap.set(0, [null, new Audio(audioSrc + "10.ogg"), new Audio(audioSrc + "20.ogg"), new Audio(audioSrc + "30.ogg"), new Audio(audioSrc + "40.ogg")]);
-audioMap.set(1, [null, new Audio(audioSrc + "11.ogg"), new Audio(audioSrc + "21.ogg"), new Audio(audioSrc + "31.ogg"), new Audio(audioSrc + "41.ogg")]);
-audioMap.set(2, [null, new Audio(audioSrc + "12.ogg"), new Audio(audioSrc + "22.ogg"), new Audio(audioSrc + "32.ogg"), new Audio(audioSrc + "42.ogg")]);
-audioMap.set(3, [null, new Audio(audioSrc + "13.ogg"), new Audio(audioSrc + "23.ogg"), new Audio(audioSrc + "33.ogg"), new Audio(audioSrc + "43.ogg")]);
-audioMap.set(4, [null, new Audio(audioSrc + "14.ogg"), new Audio(audioSrc + "24.ogg"), new Audio(audioSrc + "34.ogg"), new Audio(audioSrc + "44.ogg")]);
-audioMap.set(5, [new Audio(audioSrc + "05.ogg"), new Audio(audioSrc + "15.ogg"), new Audio(audioSrc + "25.ogg"), new Audio(audioSrc + "35.ogg"), new Audio(audioSrc + "45.ogg")]);
-audioMap.set(6, [new Audio(audioSrc + "06.ogg"), new Audio(audioSrc + "16.ogg"), new Audio(audioSrc + "26.ogg"), new Audio(audioSrc + "36.ogg"), null]);
-audioMap.set(7, [new Audio(audioSrc + "07.ogg"), new Audio(audioSrc + "17.ogg"), new Audio(audioSrc + "27.ogg"), new Audio(audioSrc + "37.ogg"), null]);
-audioMap.set(8, [new Audio(audioSrc + "08.ogg"), new Audio(audioSrc + "18.ogg"), new Audio(audioSrc + "28.ogg"), new Audio(audioSrc + "38.ogg"), null]);
-audioMap.set(9, [new Audio(audioSrc + "09.ogg"), new Audio(audioSrc + "19.ogg"), new Audio(audioSrc + "29.ogg"), new Audio(audioSrc + "39.ogg"), null]);
-audioMap.set(10, [new Audio(audioSrc + "0A.ogg"), new Audio(audioSrc + "1A.ogg"), new Audio(audioSrc + "2A.ogg"), new Audio(audioSrc + "3A.ogg"), null]);
-audioMap.set(11, [new Audio(audioSrc + "0B.ogg"), new Audio(audioSrc + "1B.ogg"), new Audio(audioSrc + "2B.ogg"), new Audio(audioSrc + "3B.ogg"), null]);
+let pianoMap = new Map();
+pianoMap.set(0, [null, new Audio(audioSrc + "10.ogg"), new Audio(audioSrc + "20.ogg"), new Audio(audioSrc + "30.ogg"), new Audio(audioSrc + "40.ogg")]);
+pianoMap.set(1, [null, new Audio(audioSrc + "11.ogg"), new Audio(audioSrc + "21.ogg"), new Audio(audioSrc + "31.ogg"), new Audio(audioSrc + "41.ogg")]);
+pianoMap.set(2, [null, new Audio(audioSrc + "12.ogg"), new Audio(audioSrc + "22.ogg"), new Audio(audioSrc + "32.ogg"), new Audio(audioSrc + "42.ogg")]);
+pianoMap.set(3, [null, new Audio(audioSrc + "13.ogg"), new Audio(audioSrc + "23.ogg"), new Audio(audioSrc + "33.ogg"), new Audio(audioSrc + "43.ogg")]);
+pianoMap.set(4, [null, new Audio(audioSrc + "14.ogg"), new Audio(audioSrc + "24.ogg"), new Audio(audioSrc + "34.ogg"), new Audio(audioSrc + "44.ogg")]);
+pianoMap.set(5, [new Audio(audioSrc + "05.ogg"), new Audio(audioSrc + "15.ogg"), new Audio(audioSrc + "25.ogg"), new Audio(audioSrc + "35.ogg"), new Audio(audioSrc + "45.ogg")]);
+pianoMap.set(6, [new Audio(audioSrc + "06.ogg"), new Audio(audioSrc + "16.ogg"), new Audio(audioSrc + "26.ogg"), new Audio(audioSrc + "36.ogg"), null]);
+pianoMap.set(7, [new Audio(audioSrc + "07.ogg"), new Audio(audioSrc + "17.ogg"), new Audio(audioSrc + "27.ogg"), new Audio(audioSrc + "37.ogg"), null]);
+pianoMap.set(8, [new Audio(audioSrc + "08.ogg"), new Audio(audioSrc + "18.ogg"), new Audio(audioSrc + "28.ogg"), new Audio(audioSrc + "38.ogg"), null]);
+pianoMap.set(9, [new Audio(audioSrc + "09.ogg"), new Audio(audioSrc + "19.ogg"), new Audio(audioSrc + "29.ogg"), new Audio(audioSrc + "39.ogg"), null]);
+pianoMap.set(10, [new Audio(audioSrc + "0A.ogg"), new Audio(audioSrc + "1A.ogg"), new Audio(audioSrc + "2A.ogg"), new Audio(audioSrc + "3A.ogg"), null]);
+pianoMap.set(11, [new Audio(audioSrc + "0B.ogg"), new Audio(audioSrc + "1B.ogg"), new Audio(audioSrc + "2B.ogg"), new Audio(audioSrc + "3B.ogg"), null]);
+
+const guitarSrc = "assets/guitar/";
+let guitarMap = new Map();
+guitarMap.set(0, [null, new Audio(guitarSrc + "G10.ogg"), new Audio(guitarSrc + "G20.ogg"), new Audio(guitarSrc + "G30.ogg")]);
+guitarMap.set(1, [null, new Audio(guitarSrc + "G11.ogg"), new Audio(guitarSrc + "G21.ogg"), new Audio(guitarSrc + "G31.ogg")]);
+guitarMap.set(2, [null, new Audio(guitarSrc + "G12.ogg"), new Audio(guitarSrc + "G22.ogg"), new Audio(guitarSrc + "G32.ogg")]);
+guitarMap.set(3, [null, new Audio(guitarSrc + "G13.ogg"), new Audio(guitarSrc + "G23.ogg"), new Audio(guitarSrc + "G33.ogg")]);
+guitarMap.set(4, [new Audio(guitarSrc + "G04.ogg"), new Audio(guitarSrc + "G14.ogg"), new Audio(guitarSrc + "G24.ogg"), new Audio(guitarSrc + "G34.ogg")]);
+guitarMap.set(5, [new Audio(guitarSrc + "G05.ogg"), new Audio(guitarSrc + "G15.ogg"), new Audio(guitarSrc + "G25.ogg"), null]);
+guitarMap.set(6, [new Audio(guitarSrc + "G06.ogg"), new Audio(guitarSrc + "G16.ogg"), new Audio(guitarSrc + "G26.ogg"), null]);
+guitarMap.set(7, [new Audio(guitarSrc + "G07.ogg"), new Audio(guitarSrc + "G17.ogg"), new Audio(guitarSrc + "G27.ogg"), null]);
+guitarMap.set(8, [new Audio(guitarSrc + "G08.ogg"), new Audio(guitarSrc + "G18.ogg"), new Audio(guitarSrc + "G28.ogg"), null]);
+guitarMap.set(9, [new Audio(guitarSrc + "G09.ogg"), new Audio(guitarSrc + "G19.ogg"), new Audio(guitarSrc + "G29.ogg"), null]);
+guitarMap.set(10, [new Audio(guitarSrc + "G0A.ogg"), new Audio(guitarSrc + "G1A.ogg"), new Audio(guitarSrc + "G2A.ogg"), null]);
+guitarMap.set(11, [new Audio(guitarSrc + "G0B.ogg"), new Audio(guitarSrc + "G1B.ogg"), new Audio(guitarSrc + "G2B.ogg"), null]);
+
+let audioMap = guitarMap;
 
 function getSemitoneDifference(note1, note2) {
     let rule = ["C", "D", "E", "F", "G", "A", "B"];

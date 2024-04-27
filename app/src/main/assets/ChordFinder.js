@@ -88,7 +88,7 @@ function findChord() {
                 divOutput.removeChild(divOutput.lastChild);
                 divOutput.removeChild(divOutput.lastChild);
             }
-            if(chord.components[0].getPitchClass() < 5){ //chords above F are sounding too sharp
+            if(chord.components[0].getPitchClass() < 7){ 
                 chord.play(1);
             }
             else{
