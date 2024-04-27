@@ -8,14 +8,12 @@ Capabilities:
 - Generate harmonic circle in any supported scale for all chords and greek modes
 - Calculate all available tensions for any chord in the circle
 - Generate any heptatonic scale for any root note and mode
-- Sound playback for any chord
+- Beautiful classical guitar sound for any chord
 
 TO-DO:
 --------------------
-- Chord progression randomizer given n-length
-- Chord components calculator given any input chord
 - Melody harmonizer by intervals
-- Scale finder given heptatonic melody
+- Scale finder
 
 Related links:
 --------------------
