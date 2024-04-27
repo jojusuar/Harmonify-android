@@ -74,7 +74,7 @@ class CircularLinkedList {
     indexOfObject(element) {
         let index = 0;
         let temp = this.reference;
-        if (temp.getData().equals(element)) {
+        if (temp.data.equals(element)) {
             return index;
         }
         temp = this.reference.getNext();
@@ -93,13 +93,13 @@ class CircularLinkedList {
     indexOfString(element) {
         let index = 0;
         let temp = this.reference;
-        if (temp.getData().localeCompare(element)) {
+        if (temp.getData().localeCompare(element) == 0) {
             return index;
         }
         temp = this.reference.getNext();
         index++;
         while (temp !== this.reference) {
-            if (temp.getData().localeCompare(element)) {
+            if (temp.getData().localeCompare(element) == 0) {
                 return index;
             }
             temp = temp.getNext();

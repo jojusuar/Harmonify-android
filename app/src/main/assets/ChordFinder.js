@@ -1,10 +1,3 @@
-let divFinder = document.getElementById('finderButtons');
-let divNotes = document.getElementById('selectedNotes');
-let divWarning = document.getElementById('warning');
-let addNoteButton = document.getElementById('addNoteButton');
-let deleteNoteButton = document.getElementById('deleteNoteButton');
-deleteNoteButton.style.display = 'none';
-let selectedNotes = [];
 let noteGraph = new Graph(true);
 let strict = false;
 

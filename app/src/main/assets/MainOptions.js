@@ -67,6 +67,13 @@ let scaleDiv = document.getElementById("ScaleButtons");
 let scaleDropdowns = '<select id="scaleSelector" class="dropdown" onchange="handleScale()"><option value="DIATONIC" selected>Diatonic (natural)</option><option value="MELODIC_ASC">Melodic (ascending)</option><option value="HARMONIC_MAJOR">Harmonic major</option><option value="HARMONIC_MINOR">Harmonic minor</option><option value="BYZANTINE">Byzantine (double harmonic)</option><option value="NEAPOLITAN_MAJOR">Neapolitan major</option><option value="NEAPOLITAN_MINOR">Neapolitan minor</option><option value="HUNGARIAN_MAJOR">Hungarian major</option><option value="ROMANIAN_MAJOR">Romanian major</option></select><select id="modeSelector" class="dropdown"><option value=0 selected>I. Ionian (major)</option><option value=1>II. Dorian</option><option value=2>III. Phrygian</option><option value=3>IV. Lydian</option><option value=4>V. Mixolydian</option><option value=5>VI. Aeolian (minor)</option><option value=6>VII. Locrian</option></select>';;
 
 let divOutput = document.getElementById("output");
+let divFinder = document.getElementById('finderButtons');
+let divNotes = document.getElementById('selectedNotes');
+let divWarning = document.getElementById('warning');
+let addNoteButton = document.getElementById('addNoteButton');
+let deleteNoteButton = document.getElementById('deleteNoteButton');
+deleteNoteButton.style.display = 'none';
+let selectedNotes = [];
 
 function clearOutput() {
     while (divOutput.firstChild) {
@@ -104,7 +111,7 @@ function toggleElements(buttonID, divID) {
             }
         });
     }
-    else if (buttonID === 'finderOption') {
+    else if (buttonID === 'finderOption' || buttonID == 'scaleFinderOption') {
         alterButtons.forEach(button => {
             if (button.id == "doubleFlatButton" || button.id == "doubleSharpButton") {
                 button.style.display = 'inline';

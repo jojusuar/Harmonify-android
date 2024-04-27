@@ -74,7 +74,7 @@ equivalencyMap.set(9, [new Note("A", false, false, false, false), new Note("G", 
 equivalencyMap.set(10, [new Note("A", false, true, false, false), new Note("B", true, false, false, false), new Note("C", false, false, true, false)]);
 equivalencyMap.set(11, [new Note("B", false, false, false, false), new Note("C", true, false, false, false), new Note("A", false, false, false, true)]);
 
-// const audioSrc = "assets/audio/"; this will remain as legacy in case i ever want to add a piano soundfont again
+// const audioSrc = "assets/audio/"; this will remain as legacy in case i ever want to add a piano sound font again
 // let pianoMap = new Map();
 // pianoMap.set(0, [null, new Audio(audioSrc + "10.ogg"), new Audio(audioSrc + "20.ogg"), new Audio(audioSrc + "30.ogg"), new Audio(audioSrc + "40.ogg")]);
 // pianoMap.set(1, [null, new Audio(audioSrc + "11.ogg"), new Audio(audioSrc + "21.ogg"), new Audio(audioSrc + "31.ogg"), new Audio(audioSrc + "41.ogg")]);

@@ -22,6 +22,8 @@
 <body style="background-color: rgb(39, 40, 41);">
     <button type="button" id="finderOption" class="option-button"
         onclick="toggleElements('finderOption', 'finderButtons')">Chord finder</button>
+    <button type="button" id="scaleFinderOption" class="option-button"
+        onclick="toggleElements('scaleFinderOption', 'scaleFinderButtons')">Scale finder</button>
     <button type="button" id="scaleOption" class="option-button"
         onclick="toggleElements('scaleOption', 'ScaleButtons')">Scale
         builder</button>
@@ -43,15 +45,23 @@
     <button type="button" id="naturalButton" class="toggleB-button" data-value=NATURAL>♮</button>
     <button type="button" id="sharpButton" class="toggleB-button" data-value=SHARP>♯</button>
     <button type="button" id="doubleSharpButton" class="toggleB-button" data-value=DOUBLE_SHARP>𝄪</button>
-    
+
     <div id="finderButtons" class="hidden">
         <br>
         Add at least 3 and up to 7 notes to form a chord
         <br>
-        Strict calculation <label class="switch"><input type="checkbox" onclick="toggleStrict()"><span class="slider round"></span></label>
+        Strict calculation <label class="switch"><input type="checkbox" onclick="toggleStrict()"><span
+                class="slider round"></span></label>
         <br>
         <button type="button" id="addNoteButton" class="output-button">Add note</button>
         <button type="button" id="deleteNoteButton" class="output-button">Delete note</button>
+    </div>
+    <div id="scaleFinderButtons" class="hidden">
+        <br>
+        Add 7 notes in order to form a scale
+        <br>
+        <button type="button" id="addNoteButton2" class="output-button">Add note</button>
+        <button type="button" id="deleteNoteButton2" class="output-button">Delete note</button>
     </div>
     <div id="selectedNotes" class="hidden"></div>
     <div id="warning"></div>
@@ -85,12 +95,15 @@
     <div id="popup" class="popup"></div>
     <footer id="footer">
         <p>&copy; 2024 Harmonify. GPL-3 licensed.</p>
-        <p><a href="https://github.com/jojusuar/Harmonify"><img src="assets/gitlogo.png" alt="GitHub Logo" height="50"></a></p>
+        <p><a href="https://github.com/jojusuar/Harmonify"><img src="assets/gitlogo.png" alt="GitHub Logo"
+                    height="50"></a></p>
     </footer>
     <script src="WebUtil.js"></script>
     <script src="MainOptions.js"></script>
     <script src="ChordFinder.js"></script>
+    <script src="ScaleFinder.js"></script>
     <script src="ScaleBuilder.js"></script>
     <script src="HarmonicCircleBuilder.js"></script>
 </body>
+
 </html>
