@@ -126,13 +126,13 @@ function getMode(linkedList) {
             let scaleID = parseInt(key);
             if (identifier == scaleID) {
                 let modeName = modeMap.get(key)[mode];
-                return '<h1>'+selectedNotes[0].toString() + ' ' + modeName+'</h1>';
+                return '<h1>' + selectedNotes[0].toString() + ' ' + modeName + '</h1>';
             }
         }
         identifier = shiftNumber(identifier);
         mode++;
     }
-    return '<br> No proper name found, but the algorithm suggests: <h1>'+makeItUp(identifier)+'</h1>';
+    return '<br> No proper name found, but the algorithm suggests: <h1>' + makeItUp() + '</h1>';
 }
 
 function getIntervalList(linkedList) {
@@ -168,19 +168,18 @@ function shiftNumber(number) {
 }
 
 let greekMap = new Map();
-greekMap.set(2212221, ['Ionian', 0]);
-greekMap.set(2122212, ['Dorian', 1]);
-greekMap.set(1222122, ['Phrygian', 2]);
-greekMap.set(2221221, ['Lydian', 3]);
-greekMap.set(2212212, ['Mixolydian', 4]);
-greekMap.set(2122122, ['Aeolian', 5]);
-greekMap.set(1221222, ['Locrian', 6]);
+greekMap.set(0, 'Ionian');
+greekMap.set(1, 'Dorian');
+greekMap.set(2, 'Phrygian');
+greekMap.set(3, 'Lydian');
+greekMap.set(4, 'Mixolydian');
+greekMap.set(5, 'Aeolian');
+greekMap.set(6, 'Locrian');
 
-function makeItUp(identifier) {
-    let closestID = getClosest(identifier);
-    let closest = greekMap.get(closestID);
-    let scaleName = selectedNotes[0].toString() + ' ' + closest[0];
-    let scale = new Scale(selectedNotes[0], new Intervals("DIATONIC", closest[1]));
+function makeItUp() {
+    let closestScale = getClosest();
+    let scaleName = selectedNotes[0].toString() + ' ' + greekMap.get(closestScale[1]);
+    let scale = closestScale[0];
     let notes = scale.notes.toArray();
     for (let i = 1; i < notes.length; i++) {
         let current = notes[i];
@@ -246,22 +245,25 @@ function makeItUp(identifier) {
     return scaleName;
 }
 
-function getClosest(identifier) {
-    let numString = identifier.toString();
-    let coincidences = 0;
+function getClosest() {
+    let scales = [new Scale(selectedNotes[0], new Intervals("DIATONIC", 0)), new Scale(selectedNotes[0], new Intervals("DIATONIC", 1)), new Scale(selectedNotes[0], new Intervals("DIATONIC", 2)), new Scale(selectedNotes[0], new Intervals("DIATONIC", 3)), new Scale(selectedNotes[0], new Intervals("DIATONIC", 4)), new Scale(selectedNotes[0], new Intervals("DIATONIC", 5)), new Scale(selectedNotes[0], new Intervals("DIATONIC", 6))]
+    let mostCoincidences = 0;
     let closest;
-    for (let key of greekMap.keys()) {
-        let modeID = String(key);
+    let index;
+    for (let i = 0; i < scales.length; i++ ) {
+        let scale = scales[i];
         let counter = 0;
-        for (let i = 0; i < modeID.length; i++) {
-            if (numString[i] == modeID[i]) {
+        let notes = scale.notes.toArray();
+        for (let j = 0; j < notes.length; j++) {
+            if(notes[j].equals(selectedNotes[j])){
                 counter++;
             }
         }
-        if (counter > coincidences) {
-            coincidences = counter;
-            closest = parseInt(key);
+        if(counter > mostCoincidences){
+            mostCoincidences = counter;
+            closest = scale;
+            index = i;
         }
     }
-    return closest;
+    return [closest, index];
 }
