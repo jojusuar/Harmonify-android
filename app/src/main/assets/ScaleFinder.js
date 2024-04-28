@@ -12,11 +12,11 @@ addButton.addEventListener('click', function () {
     let myNote = new Note(noteValue, flat, sharp, doubleFlat, doubleSharp);
     let duplicate = false;
     let inOrder = true;
-    if(selectedNotes.length > 0){
-        let lastIndex = circleRule.indexOfString(selectedNotes[selectedNotes.length -1].symbol);
+    if (selectedNotes.length > 0) {
+        let lastIndex = circleRule.indexOfString(selectedNotes[selectedNotes.length - 1].symbol);
         let lastNode = circleRule.getNode(lastIndex);
         let expected = lastNode.next.data;
-        if(myNote.symbol != expected){
+        if (myNote.symbol != expected) {
             inOrder = false;
             divWarning.innerHTML = '<h2>Unexpected note! Please enter notes in order</h2>';
         }
@@ -60,7 +60,7 @@ addButton.addEventListener('click', function () {
         if (selectedNotes.length == 7) {
             let circle = new CircularLinkedList();
             circle.addAll(selectedNotes);
-            divOutput.innerHTML = '<h1>' + getMode(circle) + '</h1>';
+            divOutput.innerHTML = getMode(circle);
             if (selectedNotes.length > 6) {
                 addNoteButton.style.display = 'none';
             }
@@ -126,13 +126,13 @@ function getMode(linkedList) {
             let scaleID = parseInt(key);
             if (identifier == scaleID) {
                 let modeName = modeMap.get(key)[mode];
-                return modeName;
+                return '<h1>'+selectedNotes[0].toString() + ' ' + modeName+'</h1>';
             }
         }
         identifier = shiftNumber(identifier);
         mode++;
     }
-    return 'No matching scale available';
+    return '<br> No proper name found, but the algorithm suggests: <h1>'+makeItUp(identifier)+'</h1>';
 }
 
 function getIntervalList(linkedList) {
@@ -165,4 +165,103 @@ function shiftNumber(number) {
     let shiftedString = numberString[numberString.length - 1] + numberString.slice(0, -1);
     let shiftedNumber = parseInt(shiftedString);
     return shiftedNumber;
+}
+
+let greekMap = new Map();
+greekMap.set(2212221, ['Ionian', 0]);
+greekMap.set(2122212, ['Dorian', 1]);
+greekMap.set(1222122, ['Phrygian', 2]);
+greekMap.set(2221221, ['Lydian', 3]);
+greekMap.set(2212212, ['Mixolydian', 4]);
+greekMap.set(2122122, ['Aeolian', 5]);
+greekMap.set(1221222, ['Locrian', 6]);
+
+function makeItUp(identifier) {
+    let closestID = getClosest(identifier);
+    let closest = greekMap.get(closestID);
+    let scaleName = selectedNotes[0].toString() + ' ' + closest[0];
+    let scale = new Scale(selectedNotes[0], new Intervals("DIATONIC", closest[1]));
+    let notes = scale.notes.toArray();
+    for (let i = 1; i < notes.length; i++) {
+        let current = notes[i];
+        let difference = getSemitoneDifference(current, selectedNotes[i]);
+        if (difference > 3) {
+            difference += -12;
+        }
+        if (difference != 0) {
+            let note = i + 1;
+            if (current.flat) {
+                if (difference == -1) {
+                    scaleName += ' 𝄫' + note;
+                }
+                else if (difference == 1) {
+                    scaleName += ' ♮' + note;
+                }
+                else if (difference == 2) {
+                    scaleName += ' ♯' + note;
+                }
+                else if (difference == 3) {
+                    scaleName += ' 𝄪' + note;
+                }
+                else {
+                    scaleName += '?';
+                }
+            }
+            else if (!current.flat && !current.sharp) {
+                if (difference == -2) {
+                    scaleName += ' 𝄫' + note;
+                }
+                else if (difference == -1) {
+                    scaleName += ' ♭' + note;
+                }
+                else if (difference == 1) {
+                    scaleName += ' ♯' + note;
+                }
+                else if (difference == 2) {
+                    scaleName += ' 𝄪' + note;
+                }
+                else {
+                    scaleName += '?';
+                }
+            }
+            else if (current.sharp) {
+                if (difference == -3) {
+                    scaleName += ' 𝄫' + note;
+                }
+                else if (difference == -2) {
+                    scaleName += ' ♭' + note;
+                }
+                else if (difference == -1) {
+                    scaleName += ' ♮' + note;
+                }
+                else if (difference == 1) {
+                    scaleName += ' ♯' + note;
+                }
+                else {
+                    scaleName += '?';
+                }
+            }
+        }
+    }
+    return scaleName;
+}
+
+function getClosest(identifier) {
+    let numString = identifier.toString();
+    let coincidences = 0;
+    let closest;
+    for (let key of greekMap.keys()) {
+        let modeID = String(key);
+        let counter = 0;
+        for (let i = 0; i < modeID.length; i++) {
+            if (numString[i] == modeID[i]) {
+                counter++;
+            }
+        }
+        if (counter > coincidences) {
+            coincidences = counter;
+            closest = parseInt(key);
+        }
+    }
+    return closest;
 }
