@@ -442,15 +442,24 @@ class Chord {
         }
         this.components = components;
         let no5th = !diminishedFifth && !perfectFifth && !augmentedFifth;
-        let diminished = !second && minorThird && !majorThird && !fourth && diminishedFifth && !perfectFifth && !augmentedFifth && !minorSeventh && !majorSeventh && !flatNinth && !perfectNinth && !flatEleventh && !perfectEleventh && !flatThirteenth && !sharpThirteenth; //basically, if any interval's tonal distance is not divisible by 3 it breaks the diminished property, and at least minor 3rd and b5 must be present
+        let diminished = minorThird && diminishedFifth;
+        let augmented = majorThird && augmentedFifth;
 
         let symbol = root.toString();
 
         if (diminished) { //triad calculation
-            symbol += 'dim';
+            if(minorSeventh){
+                symbol += 'ø';
+            }
+            else{
+                symbol += '°';
+            }
         }
         else if (minorThird) {
             symbol += 'm';
+        }
+        else if(augmented){
+            symbol += '+';
         }
 
         let tensionString = ''; //tension calculation
@@ -486,8 +495,14 @@ class Chord {
         for (let i = breakpoint; i < availableSymbols.length; i++) {
             alterationString += availableSymbols[i];
         }
-        if (majorSixth && !diminished) { //6th calculation
-            symbol += '6';
+        if (majorSixth) { //6th calculation
+            if(diminished){
+                symbol += '7';
+            }
+            else{
+                symbol += '6';
+            }
+            
         }
         else if (minorSeventh) { //7th calculation (the stacking of 7th-9th-11th-13th goes here)
             symbol += tensionString;
@@ -513,7 +528,7 @@ class Chord {
         if (diminishedFifth && !diminished) { //alterations calculation (everything after breaking the 7th-9th-11th-13th order also goes here)
             symbol += '(♭5)';
         }
-        else if (augmentedFifth) {
+        else if (augmentedFifth && !augmented) {
             symbol += '(♯5)';
         }
         if (minorSixth) {
