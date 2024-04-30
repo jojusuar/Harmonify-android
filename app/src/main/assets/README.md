@@ -14,6 +14,7 @@ Capabilities:
 TO-DO:
 --------------------
 - Melody harmonizer by intervals
+- Chord components finder by chord name
   
 Related links:
 --------------------
