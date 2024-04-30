@@ -139,7 +139,7 @@ function getSemitoneDifference(note1, note2) {
     return difference;
 }
 
-function equivalents(note1) {
+function getEquivalents(note1) {
     for (let position of equivalencyMap.keys()) {
         for (let note2 of equivalencyMap.get(position)) {
             if (note1.equals(note2)) {

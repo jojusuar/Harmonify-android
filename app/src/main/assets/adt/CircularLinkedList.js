@@ -46,6 +46,29 @@ class CircularLinkedList {
         return temp;
     }
 
+    getNodeFromObject(object) {
+        let current = this.reference;
+        for (let i = 0; i < this.size; i++) {
+            let object2 = current.data;
+            if (object2.equals(object)) {
+                return current;
+            }
+            current = current.next;
+        }
+        return null;
+    }
+
+    getNodeFromString(string) {
+        let current = this.reference;
+        for (let i = 0; i < this.size; i++) {
+            if (current.data.localeCompare(string) == 0) {
+                return current;
+            }
+            current = current.next;
+        }
+        return null;
+    }
+
     changeReference(index) {
         this.reference = this.getNode(index);
     }

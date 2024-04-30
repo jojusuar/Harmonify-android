@@ -4,29 +4,17 @@ let deleteButton = document.getElementById('deleteNoteButton2');
 deleteButton.style.display = 'none';
 let noteRule = ["C", "D", "E", "F", "G", "A", "B"];
 let circleRule = new CircularLinkedList();
+let selectedButton;
+let selectedNote;
 circleRule.addAll(noteRule);
+let rootNode = circleRule.getNode(selectedNotes[0]);
 
 addButton.addEventListener('click', function () {
     clearWarning();
     clearOutput();
     let myNote = new Note(noteValue, flat, sharp, doubleFlat, doubleSharp);
     let duplicate = false;
-    let inOrder = true;
-    if (selectedNotes.length > 0) {
-        let lastIndex = circleRule.indexOfString(selectedNotes[selectedNotes.length - 1].symbol);
-        let lastNode = circleRule.getNode(lastIndex);
-        let expected = lastNode.next.data;
-        if (myNote.symbol != expected) {
-            inOrder = false;
-            divWarning.innerHTML = '<h2>Unexpected note! Please enter notes in order</h2>';
-        }
-    }
     for (let note of selectedNotes) {
-        if (myNote.symbol === note.symbol) {
-            duplicate = true;
-            divWarning.innerHTML = '<h2>Another selected note already uses that symbol</h2>';
-            break;
-        }
         let myNotePos;
         let currentPos;
         if (myNote.equals(note)) {
@@ -52,8 +40,10 @@ addButton.addEventListener('click', function () {
             break;
         }
     }
-    if (!duplicate && inOrder) {
+    if (!duplicate) {
         selectedNotes.push(myNote);
+        sortNotes();
+        normalizeRoot();
     }
     if (selectedNotes.length != 0) {
         deleteButton.style.display = 'inline-block';
@@ -70,17 +60,73 @@ addButton.addEventListener('click', function () {
         }
     }
     displayNotesAsButtons();
+    showShiftModeButtons();
 });
 
 deleteButton.addEventListener("click", function () {
-    clearWarning();
-    clearOutput();
-    selectedNotes.pop();
-    displayNotesAsButtons();
-    if (selectedNotes.length == 0) {
-        deleteButton.style.display = 'none';
+    if (selectedButton != undefined) {
+        clearWarning();
+        clearOutput();
+        divNotes.removeChild(selectedButton);
+        for (let i = 0; i < selectedNotes.length; i++) {
+            if (selectedNotes[i].equals(selectedNote)) {
+                selectedNotes.splice(i, 1);
+                break;
+            }
+        }
+        displayNotesAsButtons();
+        showShiftModeButtons();
+        if (selectedNotes.length == 0) {
+            deleteButton.style.display = 'none';
+        }
+        selectedButton = undefined;
+        selectedNote = undefined;
+        circleRule.changeReferenceFromNode(rootNode);
     }
 });
+
+function sortNotes() {
+    let root = selectedNotes[0];
+    rootNode = circleRule.getNodeFromString(root.symbol);
+    circleRule.changeReferenceFromNode(rootNode);
+    let scaleRule = circleRule.toArray();
+    selectedNotes.sort((a, b) => {
+        let indexA;
+        let indexB;
+        for (let key of equivalencyMap.keys()) {
+            if (indexA != undefined && indexB != undefined) {
+                break;
+            }
+            let pitchClass = parseInt(key);
+            for (let note of equivalencyMap.get(key)) {
+                if (note.equals(a)) {
+                    indexA = pitchClass;
+                }
+                if (note.equals(b)) {
+                    indexB = pitchClass;
+                }
+            }
+        }
+        return indexA - indexB;
+    });
+    while (!root.equals(selectedNotes[0])) {
+        selectedNotes.push(selectedNotes[0]);
+        selectedNotes.splice(0, 1);
+    }
+}
+
+function normalizeRoot() {
+    let root = selectedNotes[0];
+    if (root.doubleFlat || root.doubleSharp) {
+        let equivalents = getEquivalents(root);
+        for (let note of equivalents) {
+            if (note.unaltered() || !note.doubleFlat || !note.doubleSharp) {
+                selectedNotes[0] = note;
+                break;
+            }
+        }
+    }
+}
 
 function displayNotesAsButtons() {
     divNotes.innerHTML = '';
@@ -100,10 +146,61 @@ function displayNotesAsButtons() {
         button.appendChild(header);
         divNotes.appendChild(button);
         button.addEventListener("click", function () {
+            let allButtons = document.querySelectorAll('.chord-button');
+            allButtons.forEach(button2 => {
+                button2.style.backgroundColor = 'rgb(39, 40, 41)';
+            });
+            button.style.backgroundColor = 'rgb(70, 70, 70)';
+            selectedButton = button;
+            selectedNote = note;
             note.play(note.octave);
         });
         divNotes.style.display = 'block';
     }
+}
+
+function showShiftModeButtons() {
+    let lineBreak = document.createElement('br');
+    let nextMode = document.createElement("button");
+    let previousMode = document.createElement("button");
+    let nextH = document.createElement("h1");
+    let previousH = document.createElement("h1");
+    nextH.textContent = '→';
+    previousH.textContent = '←';
+    nextMode.appendChild(nextH);
+    previousMode.appendChild(previousH);
+    nextMode.classList.add("shift-button");
+    previousMode.classList.add("shift-button");
+    divNotes.appendChild(lineBreak);
+    divNotes.appendChild(previousMode);
+    divNotes.appendChild(nextMode);
+    nextMode.addEventListener('click', function () {
+        selectedNotes.push(selectedNotes[0]);
+        selectedNotes.splice(0, 1);
+        normalizeRoot();
+        rootNode = circleRule.getNode(selectedNotes[0]);
+        displayNotesAsButtons();
+        showShiftModeButtons();
+        if (selectedNotes.length == 7) {
+            let circle = new CircularLinkedList();
+            circle.addAll(selectedNotes);
+            divOutput.innerHTML = getMode(circle);
+        }
+    });
+    previousMode.addEventListener('click', function () {
+        let temp = [selectedNotes[selectedNotes.length - 1]];
+        temp.push(...selectedNotes.slice(0, selectedNotes.length - 1));
+        selectedNotes = temp;
+        normalizeRoot();
+        rootNode = circleRule.getNode(selectedNotes[0]);
+        displayNotesAsButtons();
+        showShiftModeButtons();
+        if (selectedNotes.length == 7) {
+            let circle = new CircularLinkedList();
+            circle.addAll(selectedNotes);
+            divOutput.innerHTML = getMode(circle);
+        }
+    });
 }
 
 let modeMap = new Map();
@@ -250,16 +347,16 @@ function getClosest() {
     let mostCoincidences = 0;
     let closest;
     let index;
-    for (let i = 0; i < scales.length; i++ ) {
+    for (let i = 0; i < scales.length; i++) {
         let scale = scales[i];
         let counter = 0;
         let notes = scale.notes.toArray();
         for (let j = 0; j < notes.length; j++) {
-            if(notes[j].equals(selectedNotes[j])){
+            if (notes[j].equals(selectedNotes[j])) {
                 counter++;
             }
         }
-        if(counter > mostCoincidences){
+        if (counter > mostCoincidences) {
             mostCoincidences = counter;
             closest = scale;
             index = i;
