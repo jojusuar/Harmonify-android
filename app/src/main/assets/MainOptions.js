@@ -90,6 +90,10 @@ function toggleElements(buttonID, divID) {
     noteGraph = new Graph(true);
     selectedNotes = [];
     selectedNotesString = "<h2> Notes: </h2>";
+    deleteNoteButton.style.display = 'none';
+    deleteButton.style.display = 'none';
+    addNoteButton.style.display = 'inline-block';
+    addButton.style.display = 'inline-block';
     clearWarning();
     clearOutput();
     closePopup();

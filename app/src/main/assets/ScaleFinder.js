@@ -52,7 +52,7 @@ addButton.addEventListener('click', function () {
             circle.addAll(selectedNotes);
             divOutput.innerHTML = getMode(circle);
             if (selectedNotes.length > 6) {
-                addNoteButton.style.display = 'none';
+                addButton.style.display = 'none';
             }
         }
         else {
@@ -78,6 +78,9 @@ deleteButton.addEventListener("click", function () {
         showShiftModeButtons();
         if (selectedNotes.length == 0) {
             deleteButton.style.display = 'none';
+        }
+        else if (selectedNotes.length < 7) {
+            addButton.style.display = 'inline-block';
         }
         selectedButton = undefined;
         selectedNote = undefined;
@@ -120,7 +123,7 @@ function normalizeRoot() {
     if (root.doubleFlat || root.doubleSharp) {
         let equivalents = getEquivalents(root);
         for (let note of equivalents) {
-            if (note.unaltered() || !note.doubleFlat || !note.doubleSharp) {
+            if (note.unaltered() || !(note.doubleFlat || note.doubleSharp)) {
                 selectedNotes[0] = note;
                 break;
             }
@@ -286,7 +289,7 @@ function makeItUp() {
         }
         if (difference != 0) {
             let note = i + 1;
-            if (current.flat) {
+            if (current.flat) {   //somewhere in between here, if a triple accidental appears (else clauses), retry the comparison against scales with the equivalent of the root note as the starting point. 
                 if (difference == -1) {
                     scaleName += ' 𝄫' + note;
                 }
@@ -300,7 +303,8 @@ function makeItUp() {
                     scaleName += ' 𝄪' + note;
                 }
                 else {
-                    scaleName += '?';
+                    tryWithEquivalent();
+                    return makeItUp();
                 }
             }
             else if (!current.flat && !current.sharp) {
@@ -317,7 +321,8 @@ function makeItUp() {
                     scaleName += ' 𝄪' + note;
                 }
                 else {
-                    scaleName += '?';
+                    tryWithEquivalent();
+                    return makeItUp();
                 }
             }
             else if (current.sharp) {
@@ -334,12 +339,18 @@ function makeItUp() {
                     scaleName += ' ♯' + note;
                 }
                 else {
-                    scaleName += '?';
+                    tryWithEquivalent();
+                    return makeItUp();
                 }
             }
         }
     }
     return scaleName;
+}
+
+function tryWithEquivalent() {
+    let equivalents = getEquivalents(selectedNotes[0]);
+    selectedNotes[0] = equivalents[0];
 }
 
 function getClosest() {
@@ -352,7 +363,7 @@ function getClosest() {
         let counter = 0;
         let notes = scale.notes.toArray();
         for (let j = 0; j < notes.length; j++) {
-            if (notes[j].equals(selectedNotes[j])) {
+            if (notes[j].getPitchClass() == selectedNotes[j].getPitchClass()) {
                 counter++;
             }
         }

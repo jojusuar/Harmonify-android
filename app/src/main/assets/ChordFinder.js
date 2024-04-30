@@ -4,16 +4,25 @@ let strict = false;
 let foundChord = '<h1> *still cooking* </h1>';
 
 function displaySelectedNotes() {
-    let selectedNotesString = "<h2> Notes: </h2>";
-    selectedNotes.forEach(note => {
-        selectedNotesString = selectedNotesString.slice(0, selectedNotesString.length - 5) + ' •' + note.toString() + '  ' + '</h2>';
-    });
-    divNotes.innerHTML = selectedNotesString;
-    divNotes.style.display = 'block';
-}
-
-function deleteNote() {
-    noteGraph.remove(selectedNotes.pop());
+    divNotes.innerHTML = '';
+    for (let note of selectedNotes) {
+        let button = document.createElement('button');
+        button.classList.add("chord-button");
+        let header = document.createElement("h1");
+        header.textContent = note.toString();
+        button.appendChild(header);
+        divNotes.appendChild(button);
+        button.addEventListener("click", function () {
+            let allButtons = document.querySelectorAll('.chord-button');
+            allButtons.forEach(button2 => {
+                button2.style.backgroundColor = 'rgb(39, 40, 41)';
+            });
+            button.style.backgroundColor = 'rgb(70, 70, 70)';
+            selectedButton = button;
+            selectedNote = note;
+        });
+        divNotes.style.display = 'block';
+    }
 }
 
 function findChord() {
@@ -259,23 +268,28 @@ addNoteButton.addEventListener('click', function () {
 });
 
 deleteNoteButton.addEventListener('click', function () {
-    clearWarning();
-    clearOutput();
-    deleteNote();
-    displaySelectedNotes();
-    if (selectedNotes.length > 2) {
-        findChord();
-    }
-    else {
+    if (selectedButton != undefined) {
+        clearWarning();
         clearOutput();
-    }
-    if (selectedNotes.length < 7) {
-        addNoteButton.style.display = 'inline-block';
+        noteGraph.remove(selectedNote);
+        divNotes.removeChild(selectedButton);
+        for (let i = 0; i < selectedNotes.length; i++) {
+            if (selectedNotes[i].equals(selectedNote)) {
+                selectedNotes.splice(i, 1);
+                break;
+            }
+        }
+        displaySelectedNotes();
         if (selectedNotes.length == 0) {
             deleteNoteButton.style.display = 'none';
         }
+        else if (selectedNotes.length < 7){
+            addNoteButton.style.display = 'inline-block';
+        }
+        selectedButton = undefined;
+        selectedNote = undefined;
+        findChord();
     }
-    displaySelectedNotes();
 });
 
 function toggleStrict() {
