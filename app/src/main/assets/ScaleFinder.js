@@ -64,6 +64,12 @@ addButton.addEventListener('click', function () {
 });
 
 deleteButton.addEventListener("click", function () {
+    if (selectedNotes.length == 0) {
+            deleteButton.style.display = 'none';
+    }
+    else if (selectedNotes.length < 7) {
+            addButton.style.display = 'inline-block';
+    }
     if (selectedButton != undefined) {
         clearWarning();
         clearOutput();
@@ -76,12 +82,6 @@ deleteButton.addEventListener("click", function () {
         }
         displayNotesAsButtons();
         showShiftModeButtons();
-        if (selectedNotes.length == 0) {
-            deleteButton.style.display = 'none';
-        }
-        else if (selectedNotes.length < 7) {
-            addButton.style.display = 'inline-block';
-        }
         selectedButton = undefined;
         selectedNote = undefined;
         circleRule.changeReferenceFromNode(rootNode);
