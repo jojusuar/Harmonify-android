@@ -96,8 +96,14 @@
     <footer id="footer">
         <p>&copy; 2024 Harmonify. GPL-3 licensed.</p>
         <p><a href="https://github.com/jojusuar/Harmonify"><img src="assets/gitlogo.png" alt="GitHub Logo"
-                    height="50"></a></p>
+                    height="50"></a>
+             <button id="aboutButton" class="option-button">About the page →</button></p>
     </footer>
+    <script>
+        document.getElementById("aboutButton").addEventListener("click", function() {
+        window.location.href = "about.html";
+    });
+    </script>
     <script src="WebUtil.js"></script>
     <script src="MainOptions.js"></script>
     <script src="ChordFinder.js"></script>

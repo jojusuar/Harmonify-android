@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Harmonify</title>
+    <link rel="fonts" href="css/nunito.css">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body style="background-color: rgb(39, 40, 41);">
+    <h1>What is Harmonify?</h1>
+    Hi! Harmonify is a web browser-based music harmony engine with the following capabilities:
+    <ul class=custom-list>
+        <li>Find possible chords formed by a collection of notes</li>
+        <li>Find the name of a scale given 7 notes</li>
+        <li>Calculate pitch class set, normal order, prime form and interval vector of chords</li>
+        <li>Generate harmonic circle in any supported scale for all chords and greek modes</li>
+        <li>Calculate all available tensions for any chord in the circle</li>
+        <li>Generate any heptatonic scale for any root note and mode</li>
+        <li>Beautiful classical guitar sound for any chord</li>
+    </ul>
+
+    <h1>How did it come to be?</h1>
+    This story is prefaced by introducing myself. My name is José Julio Suárez, I was born in Ecuador and I'm <br>
+    currently majoring in Computer Science.<br><br>
+    Though I currently love doing code, my first love was music. I learned to play guitar since I was a kid, and <br>
+    gradually started getting into theory as soon as I first listened to progressive rock and jazz fusion acts.<br>
+    At first, my plan was to study a music major when I graduated from high school, but Ecuador's music scene is...<br>
+    Quite dire. <br><br>
+    As soon as I got out of high school, I applied for a full government scholarship at ESPOL, the biggest national<br>
+    STEM school. However, at first I aimed to do an Electrical Engineering major, which didn't excite me that much<br>
+    (if at all). But chance had it that every major at the school has an Intro to Programming class, which I absolutely<br>
+    loved and did not waste a second more at EE before promptly switching to CS. I'm currently coursing 5th semester.<br>
+
+    <h1>What to expect in the future?</h1>
+    As far as my knowledge is concerned, I believe the page already implements all harmonic tools that I'd expect it to.<br>
+    Going forward, I'm planning on starting other music-unrelated projects and this will probably only be updated to<br>
+    fix bugs or logic faults. However, if you have a new feature suggestion or want something changed, feel free to<br>
+    drop by my Github repo and post an issue with anything you want to tell me. You can also reach out to me on Instagram<br>
+    at @euclasio.ini, or hear my original music at Spotify; Pedro Vicio and euclasio are my projects on there.
+    
+    <footer id="footer">
+        <p>&copy; 2024 Harmonify. GPL-3 licensed.</p>
+        <p><a href="https://github.com/jojusuar/Harmonify"><img src="assets/gitlogo.png" alt="GitHub Logo"
+                    height="50"></a>
+            <button id="returnButton" class="option-button">Go back ←</button>
+        </p>
+    </footer>
+    <script>
+        document.getElementById("returnButton").addEventListener("click", function() {
+        window.location.href = "index.html";
+    });
+    </script>
+</body>
+
+</html>
