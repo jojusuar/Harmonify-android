@@ -1,5 +1,6 @@
 class Scale {
     constructor(root, intervals) {
+        this.intervals = intervals;
         if (root == undefined) {
             this.notes = null;
         }

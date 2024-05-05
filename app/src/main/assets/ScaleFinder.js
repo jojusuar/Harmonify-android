@@ -81,10 +81,10 @@ deleteButton.addEventListener("click", function () {
         circleRule.changeReferenceFromNode(rootNode);
     }
     if (selectedNotes.length == 0) {
-            deleteButton.style.display = 'none';
+        deleteButton.style.display = 'none';
     }
     else if (selectedNotes.length < 7) {
-            addButton.style.display = 'inline-block';
+        addButton.style.display = 'inline-block';
     }
 });
 
@@ -232,7 +232,7 @@ function getMode(linkedList) {
         identifier = shiftNumber(identifier);
         mode++;
     }
-    return '<br> No proper name found, but the algorithm suggests: <h1>' + makeItUp() + '</h1>';
+    return '<br> No proper name found, but the algorithm suggests: <h1>' + makeItUp(intervals.toArray()) + '</h1>';
 }
 
 function getIntervalList(linkedList) {
@@ -276,72 +276,38 @@ greekMap.set(4, 'Mixolydian');
 greekMap.set(5, 'Aeolian');
 greekMap.set(6, 'Locrian');
 
-function makeItUp() {
-    let closestScale = getClosest();
+function makeItUp(intervals) {
+    let closestScale = getClosest(intervals);
     let scaleName = selectedNotes[0].toString() + ' ' + greekMap.get(closestScale[1]);
-    let scale = closestScale[0];
-    let notes = scale.notes.toArray();
-    for (let i = 1; i < notes.length; i++) {
-        let current = notes[i];
-        let difference = getSemitoneDifference(current, selectedNotes[i]);
-        if (difference > 3) {
+    let absoluteIntervals = getAbsoluteArray(intervals.slice(0, -1));
+    let referenceIntervals = closestScale[0];
+    for (let i = 0; i < referenceIntervals.length; i++) {
+        let difference = referenceIntervals[i] - absoluteIntervals[i];
+        if (difference > 4) {
             difference += -12;
         }
         if (difference != 0) {
-            let note = i + 1;
-            if (current.flat) {   //somewhere in between here, if a triple accidental appears (else clauses), retry the comparison against scales with the equivalent of the root note as the starting point. 
-                if (difference == -1) {
-                    scaleName += ' 𝄫' + note;
-                }
-                else if (difference == 1) {
-                    scaleName += ' ♮' + note;
-                }
-                else if (difference == 2) {
-                    scaleName += ' ♯' + note;
-                }
-                else if (difference == 3) {
-                    scaleName += ' 𝄪' + note;
-                }
-                else {
-                    tryWithEquivalent();
-                    return makeItUp();
-                }
+            let note = i + 2;
+            if(difference == -3){
+                scaleName += ' ♯♯♯' + note;
             }
-            else if (!current.flat && !current.sharp) {
-                if (difference == -2) {
-                    scaleName += ' 𝄫' + note;
-                }
-                else if (difference == -1) {
-                    scaleName += ' ♭' + note;
-                }
-                else if (difference == 1) {
-                    scaleName += ' ♯' + note;
-                }
-                else if (difference == 2) {
-                    scaleName += ' 𝄪' + note;
-                }
-                else {
-                    tryWithEquivalent();
-                    return makeItUp();
-                }
+            else if(difference == -2){
+                scaleName += ' 𝄪' + note;
             }
-            else if (current.sharp) {
-                if (difference == -3) {
-                    scaleName += ' 𝄫' + note;
-                }
-                else if (difference == -2) {
-                    scaleName += ' ♭' + note;
-                }
-                else if (difference == -1) {
-                    scaleName += ' ♮' + note;
-                }
-                else if (difference == 1) {
-                    scaleName += ' ♯' + note;
-                }
-                else {
-                    tryWithEquivalent();
-                    return makeItUp();
-                }
+            else if (difference == -1) {
+                scaleName += ' ♯' + note;
+            }
+            else if (difference == 1) {
+                scaleName += ' ♭' + note;
+            }
+            else if (difference == 2) {
+                scaleName += ' 𝄫' + note;
+            }
+            else if (difference == 3){
+                scaleName += ' ♭♭♭' +note;
+            }
+            else {
+                scaleName += ' ???' + note;
             }
         }
     }
@@ -353,25 +319,36 @@ function tryWithEquivalent() {
     selectedNotes[0] = equivalents[0];
 }
 
-function getClosest() {
-    let scales = [new Scale(selectedNotes[0], new Intervals("DIATONIC", 0)), new Scale(selectedNotes[0], new Intervals("DIATONIC", 1)), new Scale(selectedNotes[0], new Intervals("DIATONIC", 2)), new Scale(selectedNotes[0], new Intervals("DIATONIC", 3)), new Scale(selectedNotes[0], new Intervals("DIATONIC", 4)), new Scale(selectedNotes[0], new Intervals("DIATONIC", 5)), new Scale(selectedNotes[0], new Intervals("DIATONIC", 6))]
+function getClosest(intervals) {
+    let absoluteIntervals = getAbsoluteArray(intervals);
+    let c = new Note("C", false, false, false, false);
+    let scales = [new Scale(c, new Intervals("DIATONIC", 0)), new Scale(c, new Intervals("DIATONIC", 1)), new Scale(c, new Intervals("DIATONIC", 2)), new Scale(c, new Intervals("DIATONIC", 3)), new Scale(c, new Intervals("DIATONIC", 4)), new Scale(c, new Intervals("DIATONIC", 5)), new Scale(c, new Intervals("DIATONIC", 6))]
     let mostCoincidences = 0;
-    let closest;
     let index;
+    let closest;
     for (let i = 0; i < scales.length; i++) {
         let scale = scales[i];
         let counter = 0;
-        let notes = scale.notes.toArray();
-        for (let j = 0; j < notes.length; j++) {
-            if (notes[j].getPitchClass() == selectedNotes[j].getPitchClass()) {
+        let intervals2 = getAbsoluteArray(scale.intervals.intervalArray);
+        for (let j = 0; j < intervals2.length; j++) {
+            
+            if (absoluteIntervals[j] == intervals2[j]) {
                 counter++;
             }
         }
         if (counter > mostCoincidences) {
             mostCoincidences = counter;
-            closest = scale;
             index = i;
+            closest = intervals2;
         }
     }
     return [closest, index];
+}
+
+function getAbsoluteArray(intervals) {
+    let array = [intervals[0]];
+    for (let i = 1; i < intervals.length; i++) {
+        array.push(array[array.length - 1] + intervals[i]);
+    }
+    return array;
 }
