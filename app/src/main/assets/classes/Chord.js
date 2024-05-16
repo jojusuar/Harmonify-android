@@ -145,7 +145,7 @@ class Chord {
                         break;
                     }
                     case 6: {
-                        if (!perfectFifth) {
+                        if (!perfectFifth && !augmentedFifth) {
                             diminishedFifth = true;
                             noteDiminished5th = note;
                         }
