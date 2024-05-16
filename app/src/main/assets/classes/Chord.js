@@ -145,8 +145,14 @@ class Chord {
                         break;
                     }
                     case 6: {
-                        sharpEleventh = true;
-                        noteSharp11th = note;
+                        if (!perfectFifth) {
+                            diminishedFifth = true;
+                            noteDiminished5th = note;
+                        }
+                        else {
+                            sharpEleventh = true;
+                            noteSharp11th = note;
+                        }
                         break;
                     }
                     case 8: {
@@ -448,17 +454,17 @@ class Chord {
         let symbol = root.toString();
 
         if (diminished) { //triad calculation
-            if(minorSeventh){
+            if (minorSeventh) {
                 symbol += 'ø';
             }
-            else{
+            else {
                 symbol += '°';
             }
         }
         else if (minorThird) {
             symbol += 'm';
         }
-        else if(augmented){
+        else if (augmented) {
             symbol += '+';
         }
 
@@ -496,13 +502,13 @@ class Chord {
             alterationString += availableSymbols[i];
         }
         if (majorSixth) { //6th calculation
-            if(diminished){
+            if (diminished) {
                 symbol += '7';
             }
-            else{
+            else {
                 symbol += '6';
             }
-            
+
         }
         else if (minorSeventh) { //7th calculation (the stacking of 7th-9th-11th-13th goes here)
             symbol += tensionString;
